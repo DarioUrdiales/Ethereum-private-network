@@ -2,6 +2,6 @@
 
 * [EthereumPrivateRed](README.md)
 
-## Group 1
+## Wiki
 
-* [Recommended Git Branching Strategy](group-1/recommended-git-branching-strategy.md)
+* [Recommended Git Branching Strategy](wiki/recommended-git-branching-strategy.md)
