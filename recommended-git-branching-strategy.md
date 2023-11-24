@@ -1,7 +1,5 @@
 # Recommended Git Branching Strategy
 
-#### Recommended Git Branching Strategy
-
 **Branch Organization**
 
 During the development process, we follow a version control strategy based on Gitflow. We define and manage branches in Git as follows:
@@ -19,6 +17,6 @@ During the development process, we follow a version control strategy based on Gi
   * Each release deployed on _master_ is tagged to identify the code version, following the `vX.Y.Z` format (e.g., `v1.0.0`).
   * In summary, every commit to _master_ is a _release_
 
-{% embed url="https://wac-cdn.atlassian.com/dam/jcr:8f00f1a4-ef2d-498a-a2c6-8020bb97902f/03%20Release%20branches.svg?cdnVersion=1328" %}
-[https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
-{% endembed %}
+
+
+<figure><img src=".gitbook/assets/04 Hotfix branches (1).svg" alt=""><figcaption></figcaption></figure>
