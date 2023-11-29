@@ -26,3 +26,5 @@ If you want to learn more about creating good readme files then refer the follow
 * [ASP.NET Core Opens in new window or tab](https://github.com/aspnet/Home)
 * [Visual Studio Code Opens in new window or tab](https://github.com/Microsoft/vscode)
 * [Chakra Core Opens in new window or tab](https://github.com/Microsoft/ChakraCore)\
+
+* [Oficial documentation for 'ethers' library for version 6](https://docs.ethers.org/v6)

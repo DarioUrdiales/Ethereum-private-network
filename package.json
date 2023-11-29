@@ -1,0 +1,11 @@
+{
+  "name": "ethereumprivatered",
+  "version": "1.0.0",
+  "description": "Backend for Ethereum Team Project. Sponsored by CodeCrypto.",
+  "main": "index.js",
+  "scripts": {
+    "back": "npx nodemon ./back"
+  },
+  "author": "GRUPO 2",
+  "license": "ISC"
+}
