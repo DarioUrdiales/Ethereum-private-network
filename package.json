@@ -4,7 +4,8 @@
   "description": "Backend for Ethereum Team Project. Sponsored by CodeCrypto.",
   "main": "index.js",
   "scripts": {
-    "back": "npx nodemon ./back"
+    "back": "npx nodemon ./back",
+    "init-blockchain": "cd ./nodos && docker-compose build && docker-compose up"
   },
   "author": "GRUPO 2",
   "license": "ISC"
