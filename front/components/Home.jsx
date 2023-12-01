@@ -6,8 +6,8 @@ import { Outlet } from "react-router-dom"
 export function Home() {
     return <div>
         <Header></Header> 
-        <Outlet></Outlet>
         <Content></Content>
+        <Outlet></Outlet>
         <Footer></Footer>
     </div>
 }

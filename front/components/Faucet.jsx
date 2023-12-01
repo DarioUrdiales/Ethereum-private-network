@@ -1,3 +1,3 @@
 export function Faucet() {
-    return <div>Faucet</div> 
+    return <div>Faucet</div>
 }
