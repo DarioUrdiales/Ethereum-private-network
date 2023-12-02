@@ -1,3 +1,7 @@
 export function Faucet() {
-    return <div>Faucet</div>
+  return (
+    <div>
+      <h1>Faucet</h1>
+    </div>
+  );
 }
