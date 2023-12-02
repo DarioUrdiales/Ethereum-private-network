@@ -73,7 +73,7 @@ export function Content() {
               <img
                 src="../img/explorer-eth.png"
                 className="card-img-top img-thumbnail img-content"
-                alt="Transfer"
+                alt="Explorer"
               />
             </Link>
           </div>
