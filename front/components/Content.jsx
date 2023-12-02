@@ -1,7 +1,14 @@
-import { Link } from "react-router-dom";
 import { Parallax } from "react-parallax";
+import { Card } from "./Card";
 
 export function Content() {
+  const cards = [
+    { link: "/faucet", imgPath: "../img/Faucet2.png", title: "Faucet", alt: "Faucet", description: "Envía 10eth a tu billetera" },
+    { link: "/transfer", imgPath: "../img/Transfer2.png", title: "Transfer", alt: "Transfer", description: "Realiza transferencias entre cuentas" },
+    { link: "/redes", imgPath: "../img/redes-eth.png", title: "Redes", alt: "Redes", description: "Crea tus propias redes ethereum" },
+    { link: "/explorer", imgPath: "../img/explorer-eth.png", title: "Explorer", alt: "Explorer", description: "Obtén información de un bloque, de una transacción o de una cuenta" }
+  ];
+
   return (
     <div>
       <section className="text-white">
@@ -22,66 +29,11 @@ export function Content() {
         </Parallax>
       </section>
       <section className="m-5 d-flex justify-content-center">
-        <div className="card m-3 w-25 h-25 timeline">
-          <div className="div-img-content">
-            <Link to="/faucet" className="" aria-current="page">
-              <img
-                src="../img/Faucet2.png"
-                className="card-img-top img-thumbnail img-content"
-                alt="Faucet"
-              />
-            </Link>
-          </div>
-          <div className="card-body">
-            <h5 className="card-title">Faucet</h5>
-            <p className="card-text mt-3 mb-3">Envia 10eth a tu billetera</p>
-          </div>
-        </div>
-        <div className="card m-3 w-25 h-25 timeline">
-          <div className="div-img-content">
-            <Link to="/transfer" className="" aria-current="page">
-              <img
-                src="../img/Transfer2.png"
-                className="card-img-top img-thumbnail img-content"
-                alt="Transfer"
-              />
-            </Link>
-          </div>
-          <div className="card-body">
-            <h5 className="card-title">Transfer</h5>
-            <p className="card-text mt-3 mb-3">Realiza transferencias entre cuentas</p>
-          </div>
-        </div>
-        <div className="card m-3 w-25 h-25 timeline">
-          <div className="div-img-content">
-            <Link to="/redes" className="" aria-current="page">
-              <img
-                src="../img/redes-eth.png"
-                className="card-img-top img-thumbnail img-content"
-                alt="Redes"
-              />
-            </Link>
-          </div>
-          <div className="card-body">
-            <h5 className="card-title">Redes</h5>
-            <p className="card-text mt-3 mb-3">Crea tus propias redes ethereum</p>
-          </div>
-        </div>
-        <div className="card m-3 w-25 h-25 timeline">
-          <div className="div-img-content">
-            <Link to="/Explorer" className="" aria-current="page">
-              <img
-                src="../img/explorer-eth.png"
-                className="card-img-top img-thumbnail img-content"
-                alt="Explorer"
-              />
-            </Link>
-          </div>
-          <div className="card-body">
-            <h5 className="card-title">Explorer</h5>
-            <p className="card-text">Obtén información de los úlimos bloques, o de un bloque específico</p>
-          </div>
-        </div>
+        {
+          cards.map((card, index) => (
+            <Card key={index} card={card}/>
+          ))
+        }
       </section>
     </div>
   );
