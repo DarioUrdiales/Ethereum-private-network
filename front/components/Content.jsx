@@ -54,7 +54,7 @@ export function Content() {
         </div>
         <div className="card m-3 w-25 h-25 timeline">
           <div className="div-img-content">
-            <Link to="/Redes" className="" aria-current="page">
+            <Link to="/redes" className="" aria-current="page">
               <img
                 src="../img/redes-eth.png"
                 className="card-img-top img-thumbnail img-content"
@@ -64,7 +64,7 @@ export function Content() {
           </div>
           <div className="card-body">
             <h5 className="card-title">Redes</h5>
-            <p className="card-text mt-3 mb-3">Crea tus propias redes de ethereum</p>
+            <p className="card-text mt-3 mb-3">Crea tus propias redes ethereum</p>
           </div>
         </div>
         <div className="card m-3 w-25 h-25 timeline">
@@ -73,13 +73,13 @@ export function Content() {
               <img
                 src="../img/explorer-eth.png"
                 className="card-img-top img-thumbnail img-content"
-                alt="Explorer"
+                alt="Transfer"
               />
             </Link>
           </div>
           <div className="card-body">
             <h5 className="card-title">Explorer</h5>
-            <p className="card-text">Obtén información de los últimos bloques o de un bloque específico</p>
+            <p className="card-text">Obtén información de los úlimos bloques, o de un bloque específico</p>
           </div>
         </div>
       </section>
