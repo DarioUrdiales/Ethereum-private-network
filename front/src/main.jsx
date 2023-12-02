@@ -8,6 +8,7 @@ import "./index.css";
 import { Redes } from "../components/Redes.jsx";
 import { Explorer } from "../components/Explorer.jsx";
 
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
