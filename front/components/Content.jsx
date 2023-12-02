@@ -52,6 +52,36 @@ export function Content() {
             <p className="card-text">Realiza transferencias entre cuentas</p>
           </div>
         </div>
+        <div className="card m-3 w-25 h-25 timeline">
+          <div className="div-img-content">
+            <Link to="/redes" className="" aria-current="page">
+              <img
+                src="../img/redes-eth.png"
+                className="card-img-top img-thumbnail img-content"
+                alt="Redes"
+              />
+            </Link>
+          </div>
+          <div className="card-body">
+            <h5 className="card-title">Redes</h5>
+            <p className="card-text">Crea tus propias redes ethereum</p>
+          </div>
+        </div>
+        <div className="card m-3 w-25 h-25 timeline">
+          <div className="div-img-content">
+            <Link to="/explorer" className="" aria-current="page">
+              <img
+                src="../img/explorer-eth.png"
+                className="card-img-top img-thumbnail img-content"
+                alt="Explorer"
+              />
+            </Link>
+          </div>
+          <div className="card-body">
+            <h5 className="card-title">Explorer</h5>
+            <p className="card-text">Obtén información tanto de los últimos bloques, como de un bloque específico</p>
+          </div>
+        </div>
       </section>
     </div>
   );
