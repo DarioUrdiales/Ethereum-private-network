@@ -1,5 +1,6 @@
 import { Parallax } from "react-parallax";
-import { Card } from "./Card";
+import Card from 'react-bootstrap/Card';
+import { Link } from "react-router-dom";
 
 export function Content() {
   const cards = [
@@ -31,7 +32,22 @@ export function Content() {
       <section className="m-5 d-flex justify-content-center">
         {
           cards.map((card, index) => (
-            <Card key={index} card={card}/>
+            <Card key={index} className="card m-3 w-25 h-25 timeline">
+              <Link to={card.link}>
+                <div className="div-img-content">
+                  <Card.Img 
+                    className="img-thumbnail img-content" 
+                    variant="top" 
+                    alt={card.alt} 
+                    src={card.imgPath}
+                  />
+                </div>
+              </Link>
+              <Card.Body>
+                <Card.Title>{card.title}</Card.Title>
+                <Card.Text>{card.description}</Card.Text>
+              </Card.Body>
+            </Card>
           ))
         }
       </section>
