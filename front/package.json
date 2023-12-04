@@ -12,6 +12,7 @@
   "dependencies": {
     "mdb-react-ui-kit": "^7.0.0",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
     "react-parallax": "^3.5.1",
     "react-query": "^3.39.3",

@@ -12,6 +12,7 @@ import { Block } from "../components/Explorer/Block.jsx";
 import { LatestBlocks } from "../components/Explorer/LatestBlocks.jsx";
 import { Tx } from "../components/Explorer/Tx.jsx";
 import { Address } from "../components/Explorer/Address.jsx";
+import { Root } from "../components/Root.jsx";
 
 const queryClient = new QueryClient()
 
@@ -20,15 +21,18 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/faucet" element={<Faucet />} />
-          <Route path="/transfer" element={<Transfer />} />
-          <Route path="/redes" element={<Redes />} />
-          <Route path="/explorer" element={<Explorer />}>
-            <Route path="" element={<LatestBlocks></LatestBlocks>}></Route>
-            <Route path="block/:block" element={<Block></Block>}></Route>
-            <Route path="tx/:tx" element={<Tx></Tx>}></Route>
-            <Route path="address/:address" element={<Address></Address>}></Route>
+          <Route path="/" element={<Root/>}>
+            <Route index element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/faucet" element={<Faucet />} />
+            <Route path="/transfer" element={<Transfer />} />
+            <Route path="/redes" element={<Redes />} />
+            <Route path="/explorer" element={<Explorer />}>
+              <Route path="" element={<LatestBlocks></LatestBlocks>}></Route>
+              <Route path="block/:block" element={<Block></Block>}></Route>
+              <Route path="tx/:tx" element={<Tx></Tx>}></Route>
+              <Route path="address/:address" element={<Address></Address>}></Route>
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

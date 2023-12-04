@@ -7,6 +7,13 @@
   object-fit: cover;
 }
 
+.full-height {
+  height: 100vh;
+}
+
+.content-container {
+  margin-top: 62px;
+}
 
 .div-cent-izda {
   position: absolute;
@@ -33,8 +40,6 @@
 
 .div-img-content {
   overflow: hidden;
-  margin: 20px;
-
 }
 
 .img-content {
