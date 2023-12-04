@@ -53,29 +53,26 @@ export function Faucet() {
     }
   }
 
-  useEffect(() => {
-    async function fetchAccount() {
-      if (!window.ethereum) {
-        setError("Ethereum provider not detected. Please install MetaMask.");
-        return;
-      }
-
+  const connectWallet = async () => {
+    if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
         setAccount(accounts[0]);
-      } catch (err) {
-        setError("Failed to fetch account.");
-        console.error(err);
+      } catch (error) {
+        setError("Failed to connect wallet.");
+        console.error(error);
       }
+    } else {
+      setError("Ethereum provider not detected. Please install MetaMask.");
     }
-
-    fetchAccount();
-  }, []);
+  };
 
   useEffect(() => {
-    fetchBalance();
+    if (account) {
+      fetchBalance();
+    }
   }, [account]);
 
   async function invokeFaucet() {
@@ -99,12 +96,12 @@ export function Faucet() {
       console.error(err);
     }
   }
-  //rgba(33, 48, 34, 0.71)
+
   return (
     <Parallax strength={400}>
-      <Header></Header>
+      <Header />
       <div
-        className="bg-black min-vh-100 d-flex align-items-center"
+        className="bg-black min-vh-100 d-flex flex-column justify-content-center"
         style={{ background: "#0C290E" }}>
         {" "}
         <div className="container my-5">
@@ -124,6 +121,16 @@ export function Faucet() {
                   {error}
                 </div>
               )}
+
+              {/* Connect Wallet Button (Top Right) */}
+              {!account ? (
+                <Button
+                  onClick={connectWallet}
+                  className="btn btn-primary fs-4 align-self-end mt-2 me-2">
+                  Connect Wallet
+                </Button>
+              ) : null}
+
               {/* Custom Card components */}
               <CustomCard
                 title={`Address: ${account || "Not connected"}`}
@@ -156,8 +163,7 @@ export function Faucet() {
                   </Button>
                 </div>
               </CustomCard>
-
-              {/* Button to go home */}
+              {/* Go Home Button */}
               <div className="mt-4">
                 <Link
                   to="/"
@@ -174,7 +180,7 @@ export function Faucet() {
           </div>
         </div>
       </div>
-      <Footer></Footer>
+      <Footer />
     </Parallax>
   );
 }
