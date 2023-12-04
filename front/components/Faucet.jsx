@@ -5,6 +5,8 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { Parallax } from "react-parallax";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 
 // Define a Card component for reusability
 function CustomCard({ title, children, background, titleColor }) {
@@ -15,7 +17,7 @@ function CustomCard({ title, children, background, titleColor }) {
         borderRadius: "20px",
         maxWidth: "1000px",
         margin: "0 auto",
-        background: background || "#032105",
+        background: background || "#103D13",
       }}>
       <Card.Body>
         <Card.Title className="fs-4" style={{ color: titleColor || "#FFFFFF" }}>
@@ -97,27 +99,23 @@ export function Faucet() {
       console.error(err);
     }
   }
-
+  //rgba(33, 48, 34, 0.71)
   return (
     <Parallax strength={400}>
+      <Header></Header>
       <div
         className="bg-black min-vh-100 d-flex align-items-center"
-        style={{ background: "black" }}>
+        style={{ background: "#0C290E" }}>
+        {" "}
         <div className="container my-5">
           <div className="row justify-content-center">
             <div className="col-lg-8">
-              <nav className="navbar navbar-expand-lg navbar-light bg-white p-2 fixed-top">
-                <div className="d-flex align-items-center">
-                  <Logo />
-                  <p className="fs-3 mx-2 ml-2 mb-0 ">{datos.header.name}</p>
-                </div>
-              </nav>
-
               {error && (
                 <div
                   className="alert alert-warning mt-3"
                   role="alert"
                   style={{
+                    borderRadius: "5px",
                     backgroundColor: "#DABB9F",
                     color: "#333",
                     maxWidth: "1000px",
@@ -126,8 +124,6 @@ export function Faucet() {
                   {error}
                 </div>
               )}
-
-              {/* Custom Card components */}
               {/* Custom Card components */}
               <CustomCard
                 title={`Address: ${account || "Not connected"}`}
@@ -140,24 +136,22 @@ export function Faucet() {
                 background="#FFFFFF"
                 titleColor="#000000"
               />
-
               <CustomCard
                 title="Receive faucet ERC20 to your wallet"
                 style={{
                   color: "#FFFFFF",
-                  background: "rgba(61, 60, 57, 0.71)",
                 }}>
-                <div className="d-grid gap-2 fs-4">
+                <div className="d-grid gap-2 mt-10 fs-4">
                   <Button
                     onClick={invokeFaucet}
-                    className="btn btn-success fs-4">
+                    className="btn btn-success mt-4 fs-4">
                     Get faucet token!
                   </Button>
                 </div>
                 <div className="d-grid gap-2">
                   <Button
                     onClick={fetchBalance}
-                    className="btn btn-dark mt-2 fs-4">
+                    className="btn btn-secondary mt-3 fs-4">
                     Check my balance
                   </Button>
                 </div>
@@ -180,6 +174,7 @@ export function Faucet() {
           </div>
         </div>
       </div>
+      <Footer></Footer>
     </Parallax>
   );
 }
