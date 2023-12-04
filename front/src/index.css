@@ -2,7 +2,7 @@
   background-image: url("./img/Ethereum3.png");
   background-size: cover;
   background-position: center;
-  height: 700px; /* set the height of the div */
+  height: 700px;
   width: 100%;
   object-fit: cover;
 }
@@ -24,17 +24,17 @@
 
 .div-cent-dcha {
   position: absolute;
-  top:50%;
+  top: 50%;
   left: 85%;
   transform: translate(-50%, -50%);
 }
 
 .text-content-build {
-  font-family: 'Orbitron', sans-serif; 
-} 
+  font-family: "Orbitron", sans-serif;
+}
 
 .text-content-eth {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 30px;
 }
 
@@ -74,5 +74,52 @@
 
   animation-range: entry 25% cover 50%;
   animation-fill-mode: both;
+}
 
+/* styles.css */
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+}
+
+.team {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: #333;
+}
+.member {
+  margin: 30px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+  transition: transform 0.3s ease;
+  width: calc(30% - 80px);
+  background-color: #333;
+}
+
+.member:hover {
+  transform: scale(1.1);
+}
+
+.image img {
+  max-width: 100%;
+  border-radius: 50%;
+}
+
+.info h2 {
+  margin: 10px 0;
+}
+
+.social a {
+  margin: 5px;
+  text-decoration: none;
+  color: #fff;
+  background-color: #333;
 }
