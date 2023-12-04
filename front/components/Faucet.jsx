@@ -4,13 +4,34 @@ import datos from "../src/datos.json";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
+import { Parallax } from "react-parallax";
+
+// Define a Card component for reusability
+function CustomCard({ title, children, background, titleColor }) {
+  return (
+    <Card
+      className="mt-3"
+      style={{
+        borderRadius: "20px",
+        maxWidth: "1000px",
+        margin: "0 auto",
+        background: background || "#032105",
+      }}>
+      <Card.Body>
+        <Card.Title className="fs-4" style={{ color: titleColor || "#FFFFFF" }}>
+          {title}
+        </Card.Title>
+        {children}
+      </Card.Body>
+    </Card>
+  );
+}
 
 export function Faucet() {
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(0);
   const [error, setError] = useState(null);
 
-  // Define the fetchBalance function
   async function fetchBalance() {
     if (!account) return;
 
@@ -20,9 +41,9 @@ export function Faucet() {
       const response = await fetch(apiUrl);
       if (response.ok) {
         const json = await response.json();
-        setBalance(json.balance);
+        console.log(json);
       } else {
-        throw new Error("Failed to fetch balance.");
+        throw new Error("Failed to send Ethereum.");
       }
     } catch (err) {
       setError(err.message);
@@ -52,7 +73,6 @@ export function Faucet() {
   }, []);
 
   useEffect(() => {
-    // Automatically fetch the balance when the account changes
     fetchBalance();
   }, [account]);
 
@@ -79,62 +99,87 @@ export function Faucet() {
   }
 
   return (
-    <div className="container-fluid my-5">
-      <div className="row justify-content-center">
-        <div className="col-lg-8">
-          <nav className="navbar navbar-expand-lg navbar-light bg-white p-2 fixed-top">
-            <div className="d-flex align-items-center">
-              <Logo />
-              <p className="fs-3 mx-2 ml-2 mb-0 ">{datos.header.name}</p>
-            </div>
-          </nav>
+    <Parallax strength={400}>
+      <div
+        className="bg-black min-vh-100 d-flex align-items-center"
+        style={{ background: "black" }}>
+        <div className="container my-5">
+          <div className="row justify-content-center">
+            <div className="col-lg-8">
+              <nav className="navbar navbar-expand-lg navbar-light bg-white p-2 fixed-top">
+                <div className="d-flex align-items-center">
+                  <Logo />
+                  <p className="fs-3 mx-2 ml-2 mb-0 ">{datos.header.name}</p>
+                </div>
+              </nav>
 
-          {error && (
-            <div
-              className="alert alert-warning mt-3"
-              role="alert"
-              style={{ backgroundColor: "#DABB9F", color: "#333" }}>
-              {error}
-            </div>
-          )}
+              {error && (
+                <div
+                  className="alert alert-warning mt-3"
+                  role="alert"
+                  style={{
+                    backgroundColor: "#DABB9F",
+                    color: "#333",
+                    maxWidth: "1000px",
+                    margin: "0 auto",
+                  }}>
+                  {error}
+                </div>
+              )}
 
-          <Card className="mt-3">
-            <Card.Body>
-              <Card.Title>Address: {account || "Not connected"}</Card.Title>
-            </Card.Body>
-          </Card>
+              {/* Custom Card components */}
+              {/* Custom Card components */}
+              <CustomCard
+                title={`Address: ${account || "Not connected"}`}
+                background="#FFFFFF"
+                titleColor="#000000"
+              />
 
-          <Card className="mt-3">
-            <Card.Body>
-              <Card.Title>Balance: {balance}</Card.Title>
-            </Card.Body>
-          </Card>
+              <CustomCard
+                title={`Balance: ${balance}`}
+                background="#FFFFFF"
+                titleColor="#000000"
+              />
 
-          <Card
-            className="mt-4"
-            style={{ background: "rgba(61, 60, 57, 0.71)" }}>
-            <Card.Body>
-              <Card.Subtitle>Receive faucet ERC20 to your wallet</Card.Subtitle>
-              <br />
-              <div className="d-grid gap-2">
-                <Button onClick={invokeFaucet} className="btn btn-success">
-                  Get faucet token!
-                </Button>
+              <CustomCard
+                title="Receive faucet ERC20 to your wallet"
+                style={{
+                  color: "#FFFFFF",
+                  background: "rgba(61, 60, 57, 0.71)",
+                }}>
+                <div className="d-grid gap-2 fs-4">
+                  <Button
+                    onClick={invokeFaucet}
+                    className="btn btn-success fs-4">
+                    Get faucet token!
+                  </Button>
+                </div>
+                <div className="d-grid gap-2">
+                  <Button
+                    onClick={fetchBalance}
+                    className="btn btn-dark mt-2 fs-4">
+                    Check my balance
+                  </Button>
+                </div>
+              </CustomCard>
+
+              {/* Button to go home */}
+              <div className="mt-4">
+                <Link
+                  to="/"
+                  className="btn btn-dark fs-4"
+                  style={{
+                    borderRadius: "5px",
+                    maxWidth: "1000px",
+                    margin: "3 auto",
+                  }}>
+                  Go Home
+                </Link>
               </div>
-              <div className="d-grid gap-2">
-                <Button onClick={fetchBalance} className="btn btn-dark mt-2">
-                  Check my balance
-                </Button>
-              </div>
-            </Card.Body>
-          </Card>
-
-          {/* Button to go home */}
-          <Link to="/" className="btn btn-dark mt-3">
-            Go Home
-          </Link>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </Parallax>
   );
 }
