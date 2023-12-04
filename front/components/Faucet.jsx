@@ -8,7 +8,14 @@ import { Parallax } from "react-parallax";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
-// Define a Card component for reusability
+/**
+ * CustomCard component for displaying a styled card.
+ * @param {Object} props - Component props.
+ * @param {string} props.title - Title to be displayed on the card.
+ * @param {string} props.children - Child components to be displayed within the card.
+ * @param {string} props.background - Background color of the card.
+ * @param {string} props.titleColor - Color of the title text.
+ */
 function CustomCard({ title, children, background, titleColor }) {
   return (
     <Card
@@ -29,11 +36,17 @@ function CustomCard({ title, children, background, titleColor }) {
   );
 }
 
+/**
+ * Faucet component for the main application page.
+ */
 export function Faucet() {
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(0);
   const [error, setError] = useState(null);
 
+  /**
+   * Fetches the Ethereum account's balance.
+   */
   async function fetchBalance() {
     if (!account) return;
 
@@ -53,6 +66,9 @@ export function Faucet() {
     }
   }
 
+  /**
+   * Connects the Ethereum wallet using MetaMask.
+   */
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
@@ -75,6 +91,9 @@ export function Faucet() {
     }
   }, [account]);
 
+  /**
+   * Invokes the faucet to get Ethereum tokens.
+   */
   async function invokeFaucet() {
     if (!account) {
       setError("No Ethereum account selected.");
