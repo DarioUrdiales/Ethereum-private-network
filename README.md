@@ -15,6 +15,7 @@ This application proves to be a valuable tool as it allows companies to harness 
 * Dario Rodriguez
 * Jacky Barraza
 
+
 **Getting Started**
 
 **Installation**
@@ -100,4 +101,5 @@ To run this frontend code locally, follow these steps:
 
 The application should start locally, and you can access it through your web browser.
 
-Explore Ethereum blockchain data and enjoy using the Ethereum Explorer frontend!
+Explore Ethereum blockchain data and enjoy using the Ethereum Explorer App!
+
