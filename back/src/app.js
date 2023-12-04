@@ -11,26 +11,19 @@ app.use(cors());
 // Create a new Web3 instance connected to a local Ethereum node
 const web3 = new Web3("http://localhost:8545");
 
-//Test API for check working
-app.get("/hello", (req, res) => {
-  res.send("Hello");
-});
-
 /**
  * Returns info from the last 10 blocks
  */
 app.get("/api/blocks", async (req, res) => {
   try {
     const currentBlock = await network.getBlockNumber();
-
-    if (currentBlock == 0)
-      return res.status(404).json({ message: "No blocks on network" });
-
-    const blocks = [];
-
+    
+    const blocks = []
     for (let index = 0; index < 10; index++) {
-      const block = await network.getBlock(currentBlock - index);
-      blocks.push(block);
+        const blockNumber = currentBlock - index
+        if (blockNumber < 1) break
+        const block = await network.getBlock(blockNumber)
+        blocks.push(block)  
     }
 
     res.json(blocks);
@@ -52,9 +45,20 @@ app.get("/api/blocks/:block", async (req, res) => {
 });
 
 /**
- * Returns the balance of an Ethereum account
+ * Returns transaction info
  */
+app.get("/api/tx/:tx", async (req, res) => {
+    const tx = req.params.tx
+    try {
+        res.json(await network.getTransaction(tx))
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+})
 
+/**
+* Returns balance from address
+*/
 app.get("/api/balance/:address", async (req, res) => {
   try {
     // Retrieve the balance
@@ -65,5 +69,6 @@ app.get("/api/balance/:address", async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve balance" });
   }
 });
+
 
 module.exports = app;
