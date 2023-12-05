@@ -88,29 +88,50 @@ header {
   color: #fff;
 }
 
+.white-text {
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.black-text {
+  color: rgb(3, 3, 3);
+  font-family: Arial, sans-serif;
+}
+
+.large-text {
+  font-size: 32px; /* Large text */
+}
+
+.medium-text {
+  font-size: 24px; /* Medium text */
+}
+
+.small-text {
+  font-size: 14px; /* Small text */
+}
 .team {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  background-color: #333;
+  margin: 80px;
 }
 .member {
-  margin: 30px;
-  padding: 5px;
-  border: 1px solid #ddd;
+  margin: 10px;
+  padding: 30px;
   text-align: center;
   transition: transform 0.3s ease;
-  width: calc(30% - 80px);
-  background-color: #333;
+  justify-content: center;
+  width: calc(35% - 120px);
+  height: calc(10% - 5px);
 }
 
 .member:hover {
-  transform: scale(1.1);
+  transform: scale(1.06);
 }
 
 .image img {
   max-width: 100%;
-  border-radius: 50%;
+  border-radius: 3%;
 }
 
 .info h2 {
@@ -118,7 +139,7 @@ header {
 }
 
 .social a {
-  margin: 5px;
+  margin: 2px;
   text-decoration: none;
   color: #fff;
   background-color: #333;

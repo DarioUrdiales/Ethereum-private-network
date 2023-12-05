@@ -6,14 +6,14 @@ export function Footer() {
     <footer className="bg-dark text-white py-5">
       <div className="container">
         <div className="row">
-          <div className="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <div className="col-xl-3 mx-auto mb-10">
             <div className="d-flex align-items-center">
               <img
                 x="0px"
                 y="0px"
                 width="40"
                 height="40"
-                src="./img/cadena-de-bloques.png"
+                src="./img/codecriptoacademy.png"
                 alt="Bloques"
               />
               <a
