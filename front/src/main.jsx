@@ -1,18 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Home } from "../components/Home";
+import { Home } from "./components/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Faucet } from "../components/Faucet.jsx";
-import { Transfer } from "../components/Transfer";
+import { Faucet } from "./components/Faucet.jsx";
+import { Transfer } from "./components/Transfer";
 import "./index.css";
-import { Redes } from "../components/Redes.jsx";
-import { Explorer } from "../components/Explorer/Explorer.jsx";
+import { Redes } from "./components/Redes.jsx";
+import { Explorer } from "./components/Explorer/Explorer.jsx";
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { Block } from "../components/Explorer/Block.jsx";
-import { LatestBlocks } from "../components/Explorer/LatestBlocks.jsx";
-import { Tx } from "../components/Explorer/Tx.jsx";
-import { Address } from "../components/Explorer/Address.jsx";
-import { Root } from "../components/Root.jsx";
+import { Block } from "./components/Explorer/Block.jsx";
+import { LatestBlocks } from "./components/Explorer/LatestBlocks.jsx";
+import { Tx } from "./components/Explorer/Tx.jsx";
+import { Address } from "./components/Explorer/Address.jsx";
+import { Root } from "./components/Root.jsx";
 
 const queryClient = new QueryClient()
 

@@ -1,7 +1,7 @@
 
 
 import { Link } from "react-router-dom"
-import "../src/index.css"
+import "../index.css"
 
 function Logo() {
     return <img x="0px" y="0px" width="40" height="40" src="./img/eth.png" alt="Ethereum Logo" className="mr-3"></img>
