@@ -1,5 +1,5 @@
 const app = require("./src/app")
-const { exec } = require('child_process');
+const { exec, execSync, execFile } = require('child_process');
 
 const PORT = 3000
 
@@ -21,7 +21,7 @@ const initBlockchain = () => {
 };
 
 const prueba = () => {
-  const command = "cd ../nodos-2 && ./crear_red.sh 3 8000";
+  const command = "bash ./exec_network.sh 3 8000";
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
