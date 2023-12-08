@@ -31,7 +31,7 @@ const getNetworksList = () => {
 }
 
 /**
- * Elimina la red ethereum correspondiente al chainId especificado.
+ * Elimina la blockchain correspondiente al chainId especificado.
  * @param {number} chainId - El id de la blockchain a eliminar.
  */
 const removeNetwork = (chainId) => {
@@ -41,8 +41,8 @@ const removeNetwork = (chainId) => {
 }
 
 /**
- * Crea una nueva red ethereum con el número de nodos y el chainId especificados.
- * @param {number} nodesNumber - El número de nodos de la red.
+ * Crea una nueva blockchain con el número de nodos y el chainId especificados.
+ * @param {number} nodesNumber - El número de nodos de la blockchain.
  * @param {number} chainId - El id de la blockchain a crear.
  */
 const createNetwork = (nodesNumber, chainId) => {
@@ -51,6 +51,11 @@ const createNetwork = (nodesNumber, chainId) => {
   execute(command);
 }
 
+/**
+ * Añade un nuevo nodo a la blockchain especificada.
+ * @param {number} chainId - El id de la blockchain a la que se añadirá el nodo.
+ * @param {number} nodeNumber - El número del nodo a añadir para el nombre del nodo.
+ */
 const addNode = (chainId, nodeNumber) => {
   // Paramos la red  
   stopNetwork(chainId);
@@ -64,12 +69,20 @@ const addNode = (chainId, nodeNumber) => {
   }, 5000);
 }
 
+/**
+ * Detiene la blockchain correspondiente al chainId especificado.
+ * @param {number} chainId - El id de la blockchain a detener.
+ */
 const stopNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose stop`;
   
   execute(command);
 }
 
+/**
+ * Inicia la blockchain correspondiente al chainId especificado.
+ * @param {number} chainId - El id de la blockchain a iniciar.
+ */
 const startNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose up`;
   
