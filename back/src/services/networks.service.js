@@ -92,7 +92,6 @@ const createNode = (chainId, nodeNumber) => {
   networkFile.services[`nodo-${nodeNumber}`] = newNode;
 
   const newNetworkFile = yaml.dump(networkFile);
-  console.log({newNetworkFile});
 
   fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');
 }

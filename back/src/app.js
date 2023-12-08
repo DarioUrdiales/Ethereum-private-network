@@ -15,7 +15,6 @@ const web3 = new Web3("http://localhost:8545");
 app.get("/api/networks", (req, res) => {
   try {
     const networks = getNetworksList(); 
-    console.log(networks);
 
     res.status(200).json(networks);
   } catch (error) {
