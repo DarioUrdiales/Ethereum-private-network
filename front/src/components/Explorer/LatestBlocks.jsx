@@ -1,4 +1,4 @@
-import { getTimeAgo } from "../../src/utils/functions";
+import { getTimeAgo } from "../../utils/functions";
 import { Link } from "react-router-dom"
 import { useQuery } from "react-query";
 
