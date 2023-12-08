@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
-const { getNetworksList, removeNetwork, createNetwork } = require("./services/networks.service");
+const { getNetworksList, removeNetwork, createNetwork, addNode } = require("./services/networks.service");
 
 const network = require("./ethers/config");
 
@@ -18,6 +18,19 @@ app.get("/api/networks", (req, res) => {
     console.log(networks);
 
     res.status(200).json(networks);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/addNode/:chainId/:nodeNumber", (req, res) => {
+  try {
+    const chainId = +req.params.chainId;
+    const nodeNumber = +req.params.nodeNumber;
+
+    addNode(chainId, nodeNumber); 
+
+    res.status(200).send(`Node has been succesfully added to the network with chain id ${chainId}`);
   } catch (error) {
     res.status(500).json(error);
   }

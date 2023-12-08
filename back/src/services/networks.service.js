@@ -1,4 +1,6 @@
 const { exec, execSync } = require('child_process');
+const fs = require('fs');
+const yaml = require('js-yaml');
 
 /**
  * Obtiene la lista de redes de ethereum.
@@ -35,18 +37,7 @@ const getNetworksList = () => {
 const removeNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose down`;
 
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error al ejecutar el comando: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Error en la salida estándar del comando: ${stderr}`);
-      return;
-    }
-
-    console.log(`Salida estándar del comando:\n${stdout}`);
-  });
+  execute(command);
 }
 
 /**
@@ -57,6 +48,66 @@ const removeNetwork = (chainId) => {
 const createNetwork = (nodesNumber, chainId) => {
   const command = `bash ./exec_network.sh ${nodesNumber} ${chainId}`;
 
+  execute(command);
+}
+
+const addNode = (chainId, nodeNumber) => {
+  // Paramos la red  
+  stopNetwork(chainId);
+
+  // Creamos el nuevo nodo y lo añadimos al docker-compose.yaml 
+  createNode(chainId, nodeNumber);
+
+  // Arrancamos la red con el nuevo docker-compose.yaml
+  setTimeout(() => {
+    startNetwork(chainId);
+  }, 5000);
+}
+
+const stopNetwork = (chainId) => {
+  const command = `cd ../nodos/blockchain-${chainId} && docker-compose stop`;
+  
+  execute(command);
+}
+
+const startNetwork = (chainId) => {
+  const command = `cd ../nodos/blockchain-${chainId} && docker-compose up`;
+  
+  execute(command);
+}
+
+const createNode = (chainId, nodeNumber) => {
+  const pathNetworkFile = `../nodos/blockchain-${chainId}/docker-compose.yaml`;
+  const networkFile = yaml.load(fs.readFileSync(pathNetworkFile, 'utf8'));
+  const nodesList = Object.values(networkFile.services);
+  
+  const newNode = JSON.parse(JSON.stringify(nodesList[nodesList.length - 1]));
+  const nodeIp = String(newNode.networks[`priv-eth-net-${chainId}`].ipv4_address);
+  const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.')) + '.' + randomIp();
+
+  newNode.hostname = `nodo-${nodeNumber}`;
+  newNode.networks[`priv-eth-net-${chainId}`].ipv4_address = newIp;
+  newNode.entrypoint = newNode.entrypoint.replace(nodeIp, newIp);
+
+  networkFile.services[`nodo-${nodeNumber}`] = newNode;
+
+  const newNetworkFile = yaml.dump(networkFile);
+  console.log({newNetworkFile});
+
+  fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');
+}
+
+const randomIp = () => {
+  const randomFraction = Math.random();
+
+  const min = 10;
+  const max = 254;
+  const randomNumber = Math.floor(randomFraction * (max - min + 1)) + min;
+
+  return randomNumber;
+}
+
+const execute = (command) => {
   exec(command, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error al ejecutar el comando: ${error.message}`);
@@ -74,5 +125,6 @@ const createNetwork = (nodesNumber, chainId) => {
 module.exports = { 
   getNetworksList,
   removeNetwork,
-  createNetwork
+  createNetwork,
+  addNode
 };

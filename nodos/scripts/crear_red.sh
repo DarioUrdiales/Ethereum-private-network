@@ -6,6 +6,11 @@ fi
 NUM_NODOS=$1
 CHAIN_ID=$2
 
+# Borrar la red si ya existe para crearla de nuevo
+# NOMBRE_DE_RED="blockchain-${CHAIN_ID}_priv-eth-net-${CHAIN_ID}"
+
+./borrar_red.sh $CHAIN_ID
+
 # Crear directorio para almacenar archivos generados
 mkdir -p ../blockchain-$CHAIN_ID
 
@@ -185,14 +190,6 @@ networks:
       - subnet: 172.16.$RANGO_IP_ALEATORIO.0/24
       
 EOF
-
-# Borrar la red si ya existe para crearla de nuevo
-# NOMBRE_DE_RED="blockchain-${CHAIN_ID}_priv-eth-net-${CHAIN_ID}"
-
-./borrar_red.sh $CHAIN_ID
-
-# Listar las redes
-# ./listar_redes.sh
 
 # Lanzar la red
 cd ../blockchain-$CHAIN_ID && docker-compose up
