@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import { Link, useParams } from "react-router-dom"
-import { getTimeAgo } from "../../src/utils/functions"
+import { getTimeAgo } from "../../utils/functions"
 
 
 export function Block(){
