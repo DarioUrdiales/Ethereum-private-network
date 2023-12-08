@@ -187,15 +187,14 @@ networks:
 EOF
 
 # Borrar la red si ya existe para crearla de nuevo
-NOMBRE_DE_RED="blockchain-${CHAIN_ID}_priv-eth-net-${CHAIN_ID}"
+# NOMBRE_DE_RED="blockchain-${CHAIN_ID}_priv-eth-net-${CHAIN_ID}"
 
-./borrar_red.sh $NOMBRE_DE_RED
+./borrar_red.sh $CHAIN_ID
 
 # Listar las redes
 # ./listar_redes.sh
 
 # Lanzar la red
-cd ../blockchain-$CHAIN_ID
-docker-compose up
+cd ../blockchain-$CHAIN_ID && docker-compose up
 
 echo "Red de Ethereum creada con éxito"

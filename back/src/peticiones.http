@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/networks/create/3/7000
+
+###
+
+POST http://localhost:3000/api/networks/remove/7000
+
+###
+
+GET http://localhost:3000/api/networks

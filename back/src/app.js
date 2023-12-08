@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
+const { getNetworksList, removeNetwork, createNetwork } = require("./services/networks.service");
 
 const network = require("./ethers/config");
 
@@ -10,6 +11,42 @@ app.use(cors());
 
 // Create a new Web3 instance connected to a local Ethereum node
 const web3 = new Web3("http://localhost:8545");
+
+app.get("/api/networks", (req, res) => {
+  try {
+    const networks = getNetworksList(); 
+    console.log(networks);
+
+    res.status(200).json(networks);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/create/:nodesNumber/:chainId", (req, res) => {
+  try {
+    const nodesNumber = +req.params.nodesNumber;
+    const chainId = +req.params.chainId;
+
+    createNetwork(nodesNumber, chainId); 
+
+    res.status(200).send("Network has been succesfully created");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/remove/:chainId", (req, res) => {
+  try {
+    const chainId = +req.params.chainId;
+
+    removeNetwork(chainId); 
+
+    res.status(200).send("Network has been succesfully removed");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 /**
  * Returns info from the last 10 blocks
