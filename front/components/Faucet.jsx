@@ -31,6 +31,7 @@ function CustomCard({ title, children, background, titleColor }) {
   );
 }
 
+
 /**
  * Faucet component for the main application page.
  */
@@ -50,16 +51,18 @@ export function Faucet() {
     try {
       const response = await fetch(apiUrl);
       if (response.ok) {
-        const json = await response.json();
-        console.log(json);
+        const balance = await response.json();
+        setBalance(balance.balance)
       } else {
-        throw new Error("Failed to send Ethereum.");
+        throw new Error("Failed to connect account.");
       }
     } catch (err) {
       setError(err.message);
       console.error(err);
     }
   }
+
+
 
   /**
    * Connects the Ethereum wallet using MetaMask.
@@ -113,8 +116,7 @@ export function Faucet() {
 
   return (
     <div
-      className="bg-black min-vh-100 d-flex flex-column justify-content-center"
-      style={{ background: "#0C290E" }}>
+      className="bg-dark min-vh-100 d-flex flex-column justify-content-center">
       {" "}
       <div className="container my-5">
         <div className="row justify-content-center">

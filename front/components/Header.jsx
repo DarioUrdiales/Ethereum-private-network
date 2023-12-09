@@ -12,7 +12,7 @@ function Logo() {
 export function Header(){ 
     return (
         <div>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-2 fixed-top">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-2 fixed-top border border-secondary">
                 <div className="container-fluid d-flex justify-content-center"> 
                 <Logo className='mr-2'></Logo>
                 <Link to='/' className="navbar-brand p-2">Ethereum Team Project</Link>                
