@@ -21,7 +21,8 @@ const getNetworksList = () => {
     return { 
       name,
       chainId,
-      nodesNumber: +nodesNumber
+      nodes: +nodesNumber,
+      normalNodes: +nodesNumber - 3
     }
   });
 
@@ -89,6 +90,11 @@ const startNetwork = (chainId) => {
   execute(command);
 }
 
+/**
+ * Crea un nuevo nodo en la blockchain especificada.
+ * @param {number} chainId - El id de la blockchain.
+ * @param {number} nodeNumber - El número del nodo a crear.
+ */
 const createNode = (chainId, nodeNumber) => {
   const pathNetworkFile = `../nodos/blockchain-${chainId}/docker-compose.yaml`;
   const networkFile = yaml.load(fs.readFileSync(pathNetworkFile, 'utf8'));
