@@ -15,14 +15,23 @@ const getNetworksList = () => {
   const networks = networksList.split('\n').map(name => { 
     const chainId = +name.substring(name.lastIndexOf('-') + 1);
 
-    const containersNumberCommand = `docker ps -a --filter 'network=${name}' --format '{{.Names}}' | wc -l`;
-    const nodesNumber = execSync(containersNumberCommand).toString();
+    const containersNumberCommand = `docker ps -a --filter 'network=${name}' --format '{{.Names}}'`; /*| wc -l*/
+    const networkStatusCommand = `docker ps -a --filter 'network=${name}' --format '{{.Status}}'`;
+
+    const nodesList = execSync(containersNumberCommand).toString().split("\n");
+    const networkStatus = execSync(networkStatusCommand).toString();
+    
+    nodesList.pop();
+    
+    const nodes = nodesList.length;
+    const normalNodes = nodesList.filter(node => node.includes("nodo")).length;
 
     return { 
       name,
       chainId,
-      nodes: +nodesNumber,
-      normalNodes: +nodesNumber - 3
+      nodes,
+      normalNodes,
+      status: networkStatus.substring(0, networkStatus.indexOf(" "))
     }
   });
 
