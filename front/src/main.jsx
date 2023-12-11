@@ -13,7 +13,7 @@ import { LatestBlocks } from "./components/Explorer/LatestBlocks.jsx";
 import { Tx } from "./components/Explorer/Tx.jsx";
 import { Address } from "./components/Explorer/Address.jsx";
 import { Root } from "./components/Root.jsx";
-import { Team } from "../components/Team";
+import { Team } from "./components/Team";
 
 const queryClient = new QueryClient();
 
