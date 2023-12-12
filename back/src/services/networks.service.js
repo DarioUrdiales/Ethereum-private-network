@@ -64,14 +64,23 @@ const createNetwork = (nodesNumber, chainId) => {
 /**
  * Añade un nuevo nodo a la blockchain especificada.
  * @param {number} chainId - El id de la blockchain a la que se añadirá el nodo.
- * @param {number} nodeNumber - El número del nodo a añadir para el nombre del nodo.
+ * @param {number} nodesCount - El número de nodos a añadir.
  */
-const addNode = (chainId, nodeNumber) => {
+const addNode = (chainId, nodesCount) => {
+  if (nodesCount === 0) return;
+
+  const networks = getNetworksList();
+  const currentNetwork = networks?.find(network => network?.chainId === chainId);
+  
+  if (!currentNetwork) return;
+
   // Paramos la red  
   stopNetwork(chainId);
 
   // Creamos el nuevo nodo y lo añadimos al docker-compose.yaml 
-  createNode(chainId, nodeNumber);
+  for (let i = 1; i <= nodesCount; i++) {
+    createNode(chainId, currentNetwork.normalNodes + i);    
+  }
 
   // Arrancamos la red con el nuevo docker-compose.yaml
   setTimeout(() => {
@@ -118,7 +127,7 @@ const createNode = (chainId, nodeNumber) => {
   newNode.entrypoint = newNode.entrypoint.replace(nodeIp, newIp);
 
   networkFile.services[`nodo-${nodeNumber}`] = newNode;
-
+  
   const newNetworkFile = yaml.dump(networkFile);
 
   fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');

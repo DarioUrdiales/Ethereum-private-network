@@ -29,12 +29,12 @@ app.get("/api/networks", (req, res) => {
 });
 
 // Route to add a node to a network
-app.post("/api/networks/addNode/:chainId/:nodeNumber", (req, res) => {
+app.post("/api/networks/addNode/:chainId/:nodesCount", (req, res) => {
   try {
     const chainId = +req.params.chainId;
-    const nodeNumber = +req.params.nodeNumber;
+    const nodesCount = +req.params.nodesCount;
 
-    addNode(chainId, nodeNumber);
+    addNode(chainId, nodesCount);
 
     res
       .status(200)
