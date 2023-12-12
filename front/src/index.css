@@ -7,6 +7,16 @@
   object-fit: cover;
 }
 
+.background-eth-faucet {
+  background-image: url("./img/eth-faucet.png");
+  background-size: cover;
+  background-position: center;
+  height: 400px; /* set the height of the div */
+  width: 400px;
+  object-fit: cover;
+  margin-top: 5%;
+}
+
 .full-height {
   height: 100vh;
 }
@@ -105,6 +115,7 @@ header {
 .medium-text {
   font-size: 24px; /* Medium text */
 }
+
 
 .small-text {
   font-size: 14px; /* Small text */

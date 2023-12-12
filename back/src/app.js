@@ -1,12 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
+const { getNetworksList, removeNetwork, createNetwork, addNode } = require("./services/networks.service");
+const fs = require("fs")
+
+
+const key_miner = JSON.parse(fs.readFileSync("../nodos/initial-blockchain/keystore/UTC--2023-12-09T17-17-46.153771713Z--dbd86022f940fa2b2169fd717d7b60601de87442"))
+
 const {
   getNetworksList,
   removeNetwork,
   createNetwork,
   addNode,
 } = require("./services/networks.service");
+
 
 const network = require("./ethers/config");
 const app = express();
@@ -15,7 +22,8 @@ const fs = require("fs");
 app.use(express.json());
 app.use(cors());
 
-const web3 = new Web3("http://localhost:8545");
+const web3 = new Web3("http://localhost:9382");
+
 
 // Route to get a list of networks
 app.get("/api/networks", (req, res) => {
@@ -102,7 +110,9 @@ app.get("/api/tx/:tx", async (req, res) => {
 app.get("/api/balance/:address", async (req, res) => {
   try {
     const balance = await web3.eth.getBalance(req.params.address);
-    res.json({ balance: balance.toString() }); // Convert BigInt to string
+    const balanceEth = await web3.utils.fromWei(balance, 'ether'); 
+    
+    res.json({ balance: balanceEth.toString() }); // Convert BigInt to string
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to retrieve balance" });
@@ -182,5 +192,33 @@ app.post("/api/redparameters", (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get("/api/faucet/:address", async(req, res) => {
+  try {
+    const account = await web3.eth.accounts.decrypt(key_miner, "OCRG<RB/WDzQH72i")
+    const gasPrice = await web3.eth.getGasPrice();
+    const tx = {
+      chainId: 7000,
+      from: account.address,
+      to: req.params.address,
+      value: web3.utils.toWei('10', 'ether'),
+      gas: 21000,
+      gasPrice: gasPrice
+    };
+    const signedTx = await web3.eth.accounts.signTransaction(tx, account.privateKey);
+
+    const receipt = await JSON.stringify(web3.eth.sendSignedTransaction(signedTx.rawTransaction) , (key, value) => {
+      return typeof value === 'bigint' ? value.toString() : value;
+  });
+    
+    res.send(receipt)
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to retrieve balance" });
+  }
+
+})
+
 
 module.exports = app;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
+import Spinner from 'react-bootstrap/Spinner';
 
 /**
  * CustomCard component for displaying a styled card.
@@ -31,6 +32,7 @@ function CustomCard({ title, children, background, titleColor }) {
   );
 }
 
+
 /**
  * Faucet component for the main application page.
  */
@@ -38,6 +40,19 @@ export function Faucet() {
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(0);
   const [error, setError] = useState(null);
+  const [divTxOK, setDivTxOK] = useState(false);
+  const [loadingInvokeFaucet, setLoadingInvokeFaucet] = useState(false);
+  useEffect(() => {
+    window.ethereum.on("accountsChanged", (accounts) => {
+      setAccount(accounts[0])
+    });    
+  })
+
+  useEffect(() =>{
+    setTimeout(() => {
+      setLoadingInvokeFaucet(false); // Una vez completada la operación, se establece loading en false
+    }, 9000);
+  })
 
   /**
    * Fetches the Ethereum account's balance.
@@ -49,11 +64,14 @@ export function Faucet() {
 
     try {
       const response = await fetch(apiUrl);
+
+
+
       if (response.ok) {
-        const json = await response.json();
-        console.log(json);
+        const balance = await response.json();
+        setBalance(balance.balance)
       } else {
-        throw new Error("Failed to send Ethereum.");
+        throw new Error("Failed to connect account.");
       }
     } catch (err) {
       setError(err.message);
@@ -61,10 +79,13 @@ export function Faucet() {
     }
   }
 
+
+
   /**
    * Connects the Ethereum wallet using MetaMask.
    */
   const connectWallet = async () => {
+    setDivTxOK(false)
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
@@ -90,35 +111,46 @@ export function Faucet() {
    * Invokes the faucet to get Ethereum tokens.
    */
   async function invokeFaucet() {
+    setLoadingInvokeFaucet(true);
+    setDivTxOK(false)
     if (!account) {
       setError("No Ethereum account selected.");
+      setLoadingInvokeFaucet(false);
       return;
     }
-
     const apiUrl = `http://localhost:3000/api/faucet/${account}`;
 
     try {
       const response = await fetch(apiUrl);
       if (response.ok) {
-        const json = await response.json();
-        console.log(json);
+        setTimeout(() => {
+          setDivTxOK(true)
+          setLoadingInvokeFaucet(false);
+        }, 9000)
+        const tx = await response.json();
+        console.log(tx);
+        
       } else {
         throw new Error("Failed to send Ethereum.");
       }
     } catch (err) {
       setError(err.message);
       console.error(err);
+      setLoadingInvokeFaucet(false);
     }
   }
 
   return (
     <div
-      className="bg-black min-vh-100 d-flex flex-column justify-content-center"
-      style={{ background: "#0C290E" }}>
+      className="bg-dark min-vh-100 d-flex flex-column justify-content-center">
       {" "}
-      <div className="container my-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
+      <div className="container d-flex justify-content-center">
+        <div className="bg-dark">
+        </div>
+          <div className="row d-flex background-eth-faucet w-90 h-90"               >
+          </div>
+        <div className="row justify-content-center w-100 h-100">
+          <div className="col-lg-8 ">
             {error && (
               <div
                 className="alert alert-warning mt-3"
@@ -135,13 +167,11 @@ export function Faucet() {
             )}
 
             {/* Connect Wallet Button (Top Right) */}
-            {!account ? (
               <Button
                 onClick={connectWallet}
                 className="btn btn-primary fs-4 align-self-end mt-2 me-2">
                 Connect Wallet
               </Button>
-            ) : null}
 
             {/* Custom Card components */}
             <CustomCard
@@ -151,7 +181,7 @@ export function Faucet() {
             />
 
             <CustomCard
-              title={`Balance: ${balance}`}
+              title={`Balance: ${balance} ETH`}
               background="#FFFFFF"
               titleColor="#000000"
             />
@@ -163,8 +193,19 @@ export function Faucet() {
               <div className="d-grid gap-2 mt-10 fs-4">
                 <Button
                   onClick={invokeFaucet}
-                  className="btn btn-success mt-4 fs-4">
-                  Get faucet token!
+                  className="btn btn-success mt-4 fs-4"
+                  disabled={loadingInvokeFaucet} // Deshabilitar el botón mientras se está cargando
+                >
+                  {loadingInvokeFaucet ? ( 
+                    <div>
+                    <Spinner animation="grow" role="status">
+                      <span className="visually-hidden">Realizando transacción, espere por favor</span>
+                    </Spinner>
+                      <span className="pl-3">Realizando transacción, espere por favor</span>
+                    </div>
+                  ) : (
+                    "Get faucet token!"
+                  )}
                 </Button>
               </div>
               <div className="d-grid gap-2">
@@ -176,6 +217,13 @@ export function Faucet() {
               </div>
             </CustomCard>
             {/* Go Home Button */}
+            {divTxOK && (
+              <div className="alert alert-success mt-3 border border-success" 
+                   role="alert" >
+                <h5 className="alert-heading">Transacción realizada correctamente</h5>
+                <h6>Haz click en <b>"Check my balance"</b> para comprobar tu nuevo balance</h6>
+              </div>
+            )}
             <div className="mt-4">
               <Link
                 to="/"
