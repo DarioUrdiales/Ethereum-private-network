@@ -1,0 +1,17 @@
+{
+  "variables": {
+    "message": "JSON received and stored."
+  },
+  "reds": [
+    {
+      "chainId": 3277,
+      "nodeCount": 1,
+      "redId": "red1"
+    },
+    {
+      "chainId": 2563,
+      "nodeCount": 2,
+      "redId": "red2"
+    }
+  ]
+}
