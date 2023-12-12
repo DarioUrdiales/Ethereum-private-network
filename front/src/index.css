@@ -7,6 +7,16 @@
   object-fit: cover;
 }
 
+.background-eth-faucet {
+  background-image: url("./img/eth-faucet.png");
+  background-size: cover;
+  background-position: center;
+  height: 400px; /* set the height of the div */
+  width: 400px;
+  object-fit: cover;
+  margin-top: 5%;
+}
+
 .full-height {
   height: 100vh;
 }
@@ -75,4 +85,13 @@
   animation-range: entry 25% cover 50%;
   animation-fill-mode: both;
 
+}
+
+.video-container 
+{
+  height: 100%;
+  width: 100%;
+}
+video.fillWidth {
+  width: 100%;
 }
