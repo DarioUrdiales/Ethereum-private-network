@@ -1,58 +1,57 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
-const { getNetworksList, removeNetwork, createNetwork, addNode } = require("./services/networks.service");
+const {
+  getNetworksList,
+  removeNetwork,
+  createNetwork,
+  addNode,
+} = require("./services/networks.service");
 
 const network = require("./ethers/config");
-
 const app = express();
+const fs = require("fs");
 
+app.use(express.json());
 app.use(cors());
 
-// Create a new Web3 instance connected to a local Ethereum node
 const web3 = new Web3("http://localhost:8545");
 
+// Route to get a list of networks
 app.get("/api/networks", (req, res) => {
   try {
-    const networks = getNetworksList(); 
-
+    const networks = getNetworksList();
     res.status(200).json(networks);
   } catch (error) {
-    res.status(500).json(error);
+    console.error("Error getting networks:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
+// Route to add a node to a network
 app.post("/api/networks/addNode/:chainId/:nodeNumber", (req, res) => {
   try {
     const chainId = +req.params.chainId;
     const nodeNumber = +req.params.nodeNumber;
 
-    addNode(chainId, nodeNumber); 
+    addNode(chainId, nodeNumber);
 
-    res.status(200).send(`Node has been succesfully added to the network with chain id ${chainId}`);
+    res
+      .status(200)
+      .send(
+        `Node has been succesfully added to the network with chain id ${chainId}`
+      );
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-app.post("/api/networks/create/:nodesNumber/:chainId", (req, res) => {
-  try {
-    const nodesNumber = +req.params.nodesNumber;
-    const chainId = +req.params.chainId;
-
-    createNetwork(nodesNumber, chainId); 
-
-    res.status(200).send("Network has been succesfully created");
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
+// Route to remove a network
 app.post("/api/networks/remove/:chainId", (req, res) => {
   try {
     const chainId = +req.params.chainId;
 
-    removeNetwork(chainId); 
+    removeNetwork(chainId);
 
     res.status(200).send("Network has been succesfully removed");
   } catch (error) {
@@ -60,19 +59,17 @@ app.post("/api/networks/remove/:chainId", (req, res) => {
   }
 });
 
-/**
- * Returns info from the last 10 blocks
- */
+// Route to get information about the last 10 blocks
 app.get("/api/blocks", async (req, res) => {
   try {
     const currentBlock = await network.getBlockNumber();
-    
-    const blocks = []
+
+    const blocks = [];
     for (let index = 0; index < 10; index++) {
-        const blockNumber = currentBlock - index
-        if (blockNumber < 1) break
-        const block = await network.getBlock(blockNumber)
-        blocks.push(block)  
+      const blockNumber = currentBlock - index;
+      if (blockNumber < 1) break;
+      const block = await network.getBlock(blockNumber);
+      blocks.push(block);
     }
 
     res.json(blocks);
@@ -81,9 +78,7 @@ app.get("/api/blocks", async (req, res) => {
   }
 });
 
-/**
- * Returns info from specific block
- */
+// Route to get information about a specific block
 app.get("/api/blocks/:block", async (req, res) => {
   const blockNumber = req.params.block;
   try {
@@ -93,24 +88,19 @@ app.get("/api/blocks/:block", async (req, res) => {
   }
 });
 
-/**
- * Returns transaction info
- */
+// Route to get transaction information
 app.get("/api/tx/:tx", async (req, res) => {
-    const tx = req.params.tx
-    try {
-        res.json(await network.getTransaction(tx))
-    } catch (error) {
-        res.status(500).json(error.message)
-    }
-})
+  const tx = req.params.tx;
+  try {
+    res.json(await network.getTransaction(tx));
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+});
 
-/**
-* Returns balance from address
-*/
+// Route to get balance for a given address
 app.get("/api/balance/:address", async (req, res) => {
   try {
-    // Retrieve the balance
     const balance = await web3.eth.getBalance(req.params.address);
     res.json({ balance: balance.toString() }); // Convert BigInt to string
   } catch (err) {
@@ -119,5 +109,78 @@ app.get("/api/balance/:address", async (req, res) => {
   }
 });
 
+// Route to get the current Red parameters
+app.get("/api/inputredparameters", async (req, res) => {
+  try {
+    const updatedParameters = req.body;
+    console.log("Received Red parameters:", updatedParameters);
+
+    // Overwrite file with new data
+    fs.writeFile(
+      "redParameters.json",
+      JSON.stringify(req.body, null, 2),
+      (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send(err);
+        }
+        res.send({ message: "JSON received and stored." });
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to update the Red parameter
+app.post("/api/inputredparameters", async (req, res) => {
+  try {
+    const updatedParameters = req.body;
+    console.log("Received Red parameters:", updatedParameters);
+
+    // Write JSON string to a file
+    fs.writeFile(
+      "redParameters.json",
+      JSON.stringify(req.body, null, 2),
+      (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send(err);
+        }
+        res.send({ message: "JSON received and stored." });
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to create a network based on parameters from 'red1' in redParameters.json
+app.post("/api/redparameters", (req, res) => {
+  try {
+    const redParameters = JSON.parse(
+      fs.readFileSync("redParameters.json", "utf8")
+    );
+
+    if (!Array.isArray(redParameters.reds)) {
+      throw new Error("No reds array found in redParameters.json");
+    }
+
+    redParameters.reds.forEach((red) => {
+      const { nodeCount, chainId } = red;
+
+      createNetwork(nodeCount, chainId);
+    });
+
+    res.status(200).json({
+      message: "Networks have been successfully created for all reds.",
+    });
+  } catch (error) {
+    console.error("Error creating networks:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = app;

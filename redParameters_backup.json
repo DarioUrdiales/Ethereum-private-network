@@ -1,0 +1,42 @@
+const redParameters = {
+  metamaskAccount: "0x0000000000000000000000000000000000000000",
+  metamaskBalance: "100000000000000000000",
+  chainId: "12345",
+  nodeCount: "3",
+  accountCount: "2",
+  redCount: "1",
+};
+
+module.exports = redParameters;
+
+
+each red can have nodos type can be several rpc, just one miner, just one bootnode
+so, each red need to have at least three node, one miner, one bootnode, and one rpc, the extra node given should be counting a rpc
+
+
+the name of the nodos should be rpc1 or rpc2, till the number is given
+the miner should be miner1 miner2 depend on the number given
+only one rpc nodes given must have the parameter port and should be 
+# Numero aleatorio entre 8545 y 9500 para el puerto del nodo rpc
+PUERTO_RPC=$((RANDOM % (9500 - 8545 + 1) + 8545))
+for each node rpc define must be created a random ip IP_ALEATORIA_RPC=$((RANDOM % 246 + 10))
+for each miner IP_ALEATORIA_MINERO=$((RANDOM % 246 + 10))
+
+    "nodos":[
+        {
+            "type":"rpc",
+            "name":"rpc",
+            "ip": "172.16.238.2",
+            "port":8545
+        },
+        {
+            "type":"miner",
+            "name":"miner1",
+            "ip": "172.16.238.3"
+        },
+        {
+            "ip": "172.16.238.4",
+            "type":"normal",
+            "name":"normal"
+        }
+    ]
