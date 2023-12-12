@@ -1,0 +1,9 @@
+{
+  "reds": [
+    {
+      "redId": "red1",
+      "chainId": "3333",
+      "nodeCount": "5"
+    }
+  ]
+}

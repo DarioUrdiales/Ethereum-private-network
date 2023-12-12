@@ -144,3 +144,15 @@ header {
   color: #fff;
   background-color: #333;
 }
+.form-group label {
+  font-weight: bold;
+  font-size: 1.35rem;
+}
+
+#chain-id {
+  font-size: calc(1rem + 3pt);
+}
+
+#node-count {
+  font-size: calc(1rem + 3pt);
+}
