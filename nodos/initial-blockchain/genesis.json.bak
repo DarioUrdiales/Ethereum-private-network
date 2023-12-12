@@ -1,0 +1,26 @@
+{
+  "config": {
+    "chainId": 7000,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "byzantiumBlock": 0,
+    "constantinopleBlock": 0,
+    "petersburgBlock": 0,
+    "istanbulBlock": 0,
+    "clique": {
+      "period": 15,
+      "epoch": 30000
+    }
+  },
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "difficulty": "0x20000",
+  "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000eA4D41bf2f58CAc79B13AAbb143f01ee9E994DDC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "gasLimit": "0x2fefd8",
+  "alloc": {
+    "5B042F1E6b9674eBe0ee08993AAB5172C717607E": { "balance": "1000000000000000000000000" },
+    "F8A005Cb93501edFe0b9b1339113030db82369B9": { "balance": "1000000000000000000000000" },
+    "eA4D41bf2f58CAc79B13AAbb143f01ee9E994DDC": { "balance": "1000000000000000000000000" }
+	}
+}
