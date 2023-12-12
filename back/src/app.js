@@ -5,24 +5,16 @@ const { getNetworksList, removeNetwork, createNetwork, addNode } = require("./se
 const fs = require("fs")
 
 
-const key_miner = JSON.parse(fs.readFileSync("../nodos/initial-blockchain/keystore/UTC--2023-12-09T17-17-46.153771713Z--dbd86022f940fa2b2169fd717d7b60601de87442"))
-
-const {
-  getNetworksList,
-  removeNetwork,
-  createNetwork,
-  addNode,
-} = require("./services/networks.service");
+const key_miner = JSON.parse(fs.readFileSync("../nodos/initial-blockchain/keystore/UTC--2023-12-12T19-46-56.148829932Z--ea4d41bf2f58cac79b13aabb143f01ee9e994ddc"))
 
 
 const network = require("./ethers/config");
 const app = express();
-const fs = require("fs");
 
 app.use(express.json());
 app.use(cors());
 
-const web3 = new Web3("http://localhost:9382");
+const web3 = new Web3("http://localhost:9201");
 
 
 // Route to get a list of networks
@@ -195,7 +187,7 @@ app.post("/api/redparameters", (req, res) => {
 
 app.get("/api/faucet/:address", async(req, res) => {
   try {
-    const account = await web3.eth.accounts.decrypt(key_miner, "OCRG<RB/WDzQH72i")
+    const account = await web3.eth.accounts.decrypt(key_miner, "53Z)^r2S5TUq8i_v")
     const gasPrice = await web3.eth.getGasPrice();
     const tx = {
       chainId: 7000,

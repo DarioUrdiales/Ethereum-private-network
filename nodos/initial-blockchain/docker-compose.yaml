@@ -1,0 +1,132 @@
+version: '3.7'
+
+services:
+  geth-bootnode:
+    hostname: geth-bootnode
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./bootnode.key:/root/.ethereum/bootnode.key
+      - ./genesis.json:/root/genesis.json
+    entrypoint: sh -c 'geth init 
+      /root/genesis.json && geth  
+      --nodekeyhex="4e20cc854064af92ec01cf423fa87ce75dab5af5329d2357490eab7a64f213b7"
+      --networkid=7000
+      --netrestrict="172.16.72.0/24"
+      --port=30305'
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.165
+
+  geth-rpc-endpoint:
+    hostname: geth-rpc-endpoint
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./genesis.json:/root/genesis.json
+    depends_on:
+      - geth-bootnode
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.41
+    ports:
+      - "9201:8545"
+    entrypoint: sh -c 'geth init 
+      /root/genesis.json && geth     
+      --netrestrict="172.16.72.0/24"    
+      --bootnodes="enode://60de1b343eb1e1a1efb6d1a8990c263ce1fe4266ebafc4acd84579bd5770a8c673858df7cd07f096016008d45aa373cf434093ef3dd750b7ff296b347ffc5873@172.16.72.165:0?discport=30305"
+      --nat "extip:172.16.72.41"
+      --networkid=7000
+      --http 
+      --http.addr "0.0.0.0" 
+      --http.port 8545 
+      --http.corsdomain "*" 
+      --http.api "admin,clique,eth,debug,miner,net,txpool,personal,web3"'
+
+  geth-miner:
+    hostname: geth-miner
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./genesis.json:/root/genesis.json
+      - ./pwd.txt:/root/.ethereum/pwd.sec
+      - ./keystore:/root/.ethereum/keystore
+    depends_on:
+      - geth-bootnode
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.209
+    entrypoint: sh -c 'geth init 
+      /root/genesis.json && geth   
+      --nat "extip:172.16.72.209"
+      --netrestrict="172.16.72.0/24"
+      --bootnodes="enode://60de1b343eb1e1a1efb6d1a8990c263ce1fe4266ebafc4acd84579bd5770a8c673858df7cd07f096016008d45aa373cf434093ef3dd750b7ff296b347ffc5873@172.16.72.165:0?discport=30305"
+      --miner.etherbase 0xeA4D41bf2f58CAc79B13AAbb143f01ee9E994DDC   
+      --mine  
+      --unlock 0xeA4D41bf2f58CAc79B13AAbb143f01ee9E994DDC
+      --password /root/.ethereum/pwd.sec'
+  nodo-1:
+    hostname: nodo-1
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./genesis.json:/root/genesis.json
+    depends_on:
+      - geth-bootnode
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.219
+    entrypoint: sh -c 'geth init
+      /root/genesis.json && geth
+      --bootnodes="enode://60de1b343eb1e1a1efb6d1a8990c263ce1fe4266ebafc4acd84579bd5770a8c673858df7cd07f096016008d45aa373cf434093ef3dd750b7ff296b347ffc5873@172.16.72.165:0?discport=30305"
+      --netrestrict="172.16.72.0/24"
+      --nat "extip:172.16.72.219"'
+  nodo-2:
+    hostname: nodo-2
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./genesis.json:/root/genesis.json
+    depends_on:
+      - geth-bootnode
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.125
+    entrypoint: sh -c 'geth init
+      /root/genesis.json && geth
+      --bootnodes="enode://60de1b343eb1e1a1efb6d1a8990c263ce1fe4266ebafc4acd84579bd5770a8c673858df7cd07f096016008d45aa373cf434093ef3dd750b7ff296b347ffc5873@172.16.72.165:0?discport=30305"
+      --netrestrict="172.16.72.0/24"
+      --nat "extip:172.16.72.125"'
+  nodo-3:
+    hostname: nodo-3
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./genesis.json:/root/genesis.json
+    depends_on:
+      - geth-bootnode
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.183
+    entrypoint: sh -c 'geth init
+      /root/genesis.json && geth
+      --bootnodes="enode://60de1b343eb1e1a1efb6d1a8990c263ce1fe4266ebafc4acd84579bd5770a8c673858df7cd07f096016008d45aa373cf434093ef3dd750b7ff296b347ffc5873@172.16.72.165:0?discport=30305"
+      --netrestrict="172.16.72.0/24"
+      --nat "extip:172.16.72.183"'
+  nodo-4:
+    hostname: nodo-4
+    image: ethereum/client-go:alltools-latest
+    volumes:
+      - ./genesis.json:/root/genesis.json
+    depends_on:
+      - geth-bootnode
+    networks:
+      priv-eth-net-7000:
+        ipv4_address: 172.16.72.90
+    entrypoint: sh -c 'geth init
+      /root/genesis.json && geth
+      --bootnodes="enode://60de1b343eb1e1a1efb6d1a8990c263ce1fe4266ebafc4acd84579bd5770a8c673858df7cd07f096016008d45aa373cf434093ef3dd750b7ff296b347ffc5873@172.16.72.165:0?discport=30305"
+      --netrestrict="172.16.72.0/24"
+      --nat "extip:172.16.72.90"'
+networks:
+  priv-eth-net-7000:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.72.0/24
+      
