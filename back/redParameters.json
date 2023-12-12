@@ -2,7 +2,7 @@
   "reds": [
     {
       "redId": "red1",
-      "chainId": "3333",
+      "chainId": "8888",
       "nodeCount": "5"
     }
   ]

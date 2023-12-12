@@ -103,9 +103,9 @@ export function Redes() {
       .then((data) => {
         setVariables(data);
         // Check if 'reds' is an array before setting it to state
-        if (Array.isArray(data.reds)) {
-          setRedSpecifications(data.reds);
-        }
+        // if (Array.isArray(data.reds)) {
+        //   setRedSpecifications(data.reds);
+        // }
       })
       .catch((error) => {
         console.error("Error fetching Red parameters:", error);
@@ -117,6 +117,8 @@ export function Redes() {
       variables,
       reds: redSpecifications,
     };
+
+    console.log("Sending JSON to backend:", requestData); // Log the JSON here
 
     try {
       const response = await fetch("http://localhost:3000/api/redparameters", {
@@ -131,20 +133,12 @@ export function Redes() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const text = await response.text();
-
-      try {
-        // Try to parse the response as JSON
-        const data = JSON.parse(text);
-        console.log("Red parameters updated successfully:", data);
-        // Handle successful submission if needed
-      } catch {
-        // If the response wasn't JSON, check if it's a success message
-        if (text.includes("successfully")) {
-          console.log("Success:", text);
-        } else {
-          throw new Error(`Response wasn't JSON: ${text}`);
-        }
+      // Assuming a successful response with no content
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Red parameters updated successfully");
+      } else {
+        const text = await response.text();
+        throw new Error(`Unexpected response: ${text}`);
       }
     } catch (error) {
       console.error("Error updating Red parameters:", error);
