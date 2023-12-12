@@ -1,9 +1,1 @@
-{
-  "reds": [
-    {
-      "redId": "red1",
-      "chainId": "8888",
-      "nodeCount": "5"
-    }
-  ]
-}
+{}

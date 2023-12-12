@@ -1,21 +1,44 @@
 import React, { useState, useEffect } from "react";
 import "../index.css";
 
+/**
+ * Component for managing Red specifications.
+ * Allows users to add, edit, delete, and submit Red specifications.
+ * It also enables creating a Red by making an API call.
+ */
 export function Redes() {
+  // State for storing the current input values
+  const [newRed, setNewRed] = useState({ chainId: "", nodeCount: 0 });
+
+  // State for storing an array of Red specifications
+  const [redSpecifications, setRedSpecifications] = useState([]);
+
+  // State for controlling the display of the summary table
+  const [showSummary, setShowSummary] = useState(false);
+
+  // State for tracking the index of the Red being edited
+  const [editIndex, setEditIndex] = useState(null);
+
+  // States for managing the creation process of a Red
+  const [creatingRed, setCreatingRed] = useState(false);
+  const [creationMessage, setCreationMessage] = useState("");
+
+  // Fetch Red parameters on component mount
+  useEffect(() => {
+    fetchRedParameters();
+  }, []);
+
   const [variables, setVariables] = useState({
     redId: "",
     chainId: "",
     nodeCount: "",
   });
-  const [redSpecifications, setRedSpecifications] = useState([]);
-  const [showSummary, setShowSummary] = useState(false);
-  const [newRed, setNewRed] = useState({ chainId: "", nodeCount: 0 });
-  const [editIndex, setEditIndex] = useState(null);
 
-  useEffect(() => {
-    fetchRedParameters();
-  }, []);
-
+  /**
+   * Validates the node count input.
+   * @param {string} value - The node count value to validate.
+   * @returns {string|null} - An error message if invalid, otherwise null.
+   */
   const validateNodeCount = (value) => {
     const number = parseInt(value, 10);
     return !isNaN(number) && number > 0 && number <= 100
@@ -23,6 +46,11 @@ export function Redes() {
       : "Number of Nodes must be a positive integer and no higher than 100.";
   };
 
+  /**
+   * Validates the chain ID input.
+   * @param {string} value - The chain ID value to validate.
+   * @returns {string|null} - An error message if invalid, otherwise null.
+   */
   const validateChainId = (value) => {
     const number = parseInt(value, 10);
     return !isNaN(number) && number > 1
@@ -30,10 +58,16 @@ export function Redes() {
       : "Chain ID must be a positive integer different from 1.";
   };
 
+  /**
+   * Handles submission of a new or edited Red.
+   * Validates input, checks for duplicate chain IDs, and updates the state.
+   */
   const submitRed = () => {
+    // Validation
     const nodeCountError = validateNodeCount(newRed.nodeCount);
     const chainIdError = validateChainId(newRed.chainId);
 
+    // Alert and return if there's an error
     if (nodeCountError || chainIdError) {
       alert(
         `Invalid input. ${nodeCountError || ""} ${
@@ -43,15 +77,16 @@ export function Redes() {
       return;
     }
 
+    // Check for duplicate Chain ID
     const isDuplicateChainId = redSpecifications.some(
       (red) => red.chainId.toString() === newRed.chainId
     );
-
     if (isDuplicateChainId) {
       alert("The Chain ID already exists. Please enter a different Chain ID.");
       return;
     }
 
+    // Update Red specifications list
     const newRedData = {
       ...newRed,
       redId:
@@ -61,17 +96,16 @@ export function Redes() {
       chainId: parseInt(newRed.chainId, 10),
       nodeCount: parseInt(newRed.nodeCount, 10),
     };
+    const updatedReds =
+      editIndex !== null
+        ? redSpecifications.map((red, index) =>
+            index === editIndex ? newRedData : red
+          )
+        : [...redSpecifications, newRedData];
 
-    if (editIndex !== null) {
-      const updatedReds = [...redSpecifications];
-      updatedReds[editIndex] = newRedData;
-      setRedSpecifications(updatedReds);
-      setEditIndex(null);
-    } else {
-      setRedSpecifications([...redSpecifications, newRedData]);
-    }
-
+    setRedSpecifications(updatedReds);
     setNewRed({ chainId: "", nodeCount: 0 });
+    setEditIndex(null);
   };
 
   const editRed = (index) => {
@@ -98,42 +132,44 @@ export function Redes() {
   };
 
   const fetchRedParameters = async () => {
-    fetch("http://localhost:3000/api/redparameters")
+    fetch("http://localhost:3000/api/inputredparameters")
       .then((response) => response.json())
       .then((data) => {
         setVariables(data);
-        // Check if 'reds' is an array before setting it to state
-        // if (Array.isArray(data.reds)) {
-        //   setRedSpecifications(data.reds);
-        // }
       })
       .catch((error) => {
         console.error("Error fetching Red parameters:", error);
       });
   };
 
+  /**
+   * Asynchronously updates the Red specifications in the backend.
+   * It sends the current state of variables and redSpecifications to the server.
+   */
   const updateVariables = async () => {
     const requestData = {
       variables,
       reds: redSpecifications,
     };
-
-    console.log("Sending JSON to backend:", requestData); // Log the JSON here
+    console.log("Sending JSON to backend:", requestData);
 
     try {
-      const response = await fetch("http://localhost:3000/api/redparameters", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/inputredparameters",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Assuming a successful response with no content
+      // Check for successful response
       if (response.status >= 200 && response.status < 300) {
         console.log("Red parameters updated successfully");
       } else {
@@ -145,6 +181,10 @@ export function Redes() {
     }
   };
 
+  /**
+   * Handles the submission of the current Red specifications.
+   * It asks for confirmation before proceeding with the update.
+   */
   const submitRedParameters = () => {
     const confirmation = window.confirm(
       "Are you sure you want to submit the current red(s) specifications?"
@@ -152,6 +192,49 @@ export function Redes() {
 
     if (confirmation) {
       updateVariables();
+    }
+  };
+
+  /**
+   * Creates a new Red by sending a POST request to the backend.
+   * It sets the state to reflect the creation process and updates the user upon completion.
+   */
+  const createRed = async () => {
+    setCreatingRed(true);
+    setCreationMessage("");
+
+    try {
+      // Fetch the latest redParameters.json data
+      const redParamsResponse = await fetch(
+        "http://localhost:3000/api/inputredparameters"
+      );
+      if (!redParamsResponse.ok) {
+        throw new Error(
+          `Error fetching red parameters: ${redParamsResponse.status}`
+        );
+      }
+      const redParameters = await redParamsResponse.json();
+
+      // Make a POST request to create a red with the fetched data
+      const response = await fetch("http://localhost:3000/api/redparameters", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(redParameters), // Use redParameters here
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setCreationMessage(`Red created successfully: ${JSON.stringify(result)}`);
+    } catch (error) {
+      console.error("Error creating Red:", error);
+      setCreationMessage(`Error creating Red: ${error.message}`);
+    } finally {
+      setCreatingRed(false);
     }
   };
 
@@ -242,10 +325,23 @@ export function Redes() {
           {showSummary ? "Hide" : "Show"} Specifications
         </button>
         <button
-          className="btn btn-success mt-4 me-2"
+          className="btn btn-primary mt-4 me-2"
           onClick={submitRedParameters}>
           Submit Red Parameters
         </button>
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn btn-success mt-4 me-2"
+            onClick={createRed}
+            disabled={creatingRed}>
+            {creatingRed ? "Creating..." : "Create Red"}
+          </button>
+        </div>
+        {creationMessage && (
+          <div className="alert alert-info d-flex mt-2 justify-content-end">
+            {creationMessage}
+          </div>
+        )}
       </div>
     </div>
   );

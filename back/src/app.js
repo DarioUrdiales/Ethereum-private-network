@@ -12,26 +12,28 @@ const network = require("./ethers/config");
 
 const app = express();
 
+// Middleware to parse JSON bodies
 app.use(express.json());
 
+// Middleware to enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
 
 // Create a new Web3 instance connected to a local Ethereum node
 const web3 = new Web3("http://localhost:8545");
 
 const fs = require("fs");
-const redParameters = JSON.parse(fs.readFileSync("redParameters.json", "utf8"));
 
+// Route to get a list of networks
 app.get("/api/networks", (req, res) => {
   try {
     const networks = getNetworksList();
-
     res.status(200).json(networks);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
+// Route to add a node to a network
 app.post("/api/networks/addNode/:chainId/:nodeNumber", (req, res) => {
   try {
     const chainId = +req.params.chainId;
@@ -49,19 +51,7 @@ app.post("/api/networks/addNode/:chainId/:nodeNumber", (req, res) => {
   }
 });
 
-app.post("/api/redparameters", (req, res) => {
-  try {
-    const nodesNumber = +req.params.nodesNumber;
-    const chainId = +req.params.chainId;
-
-    createNetwork(nodesNumber, chainId);
-    res.setHeader("Content-Type", "application/json");
-    res.status(200).send("Network has been succesfully created");
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
+// Route to remove a network
 app.post("/api/networks/remove/:chainId", (req, res) => {
   try {
     const chainId = +req.params.chainId;
@@ -74,9 +64,7 @@ app.post("/api/networks/remove/:chainId", (req, res) => {
   }
 });
 
-/**
- * Returns info from the last 10 blocks
- */
+// Route to get information about the last 10 blocks
 app.get("/api/blocks", async (req, res) => {
   try {
     const currentBlock = await network.getBlockNumber();
@@ -95,9 +83,7 @@ app.get("/api/blocks", async (req, res) => {
   }
 });
 
-/**
- * Returns info from specific block
- */
+// Route to get information about a specific block
 app.get("/api/blocks/:block", async (req, res) => {
   const blockNumber = req.params.block;
   try {
@@ -107,9 +93,7 @@ app.get("/api/blocks/:block", async (req, res) => {
   }
 });
 
-/**
- * Returns transaction info
- */
+// Route to get transaction information
 app.get("/api/tx/:tx", async (req, res) => {
   const tx = req.params.tx;
   try {
@@ -119,12 +103,9 @@ app.get("/api/tx/:tx", async (req, res) => {
   }
 });
 
-/**
- * Returns balance from address
- */
+// Route to get balance for a given address
 app.get("/api/balance/:address", async (req, res) => {
   try {
-    // Retrieve the balance
     const balance = await web3.eth.getBalance(req.params.address);
     res.json({ balance: balance.toString() }); // Convert BigInt to string
   } catch (err) {
@@ -133,28 +114,35 @@ app.get("/api/balance/:address", async (req, res) => {
   }
 });
 
-/**
- * Returns the Red parameter
- */
-app.get("/api/redparameters", async (req, res) => {
-  try {
-    // Serve the Red parameters from the imported module
-    res.json(redParameters);
-  } catch (error) {
-    res.status(500).json(error.message);
-  }
-});
-
-/**
- * Route to update the Red parameter
- */
-app.post("/api/redparameters", async (req, res) => {
+// Route to get the current Red parameters
+app.get("/api/inputredparameters", async (req, res) => {
   try {
     const updatedParameters = req.body;
     console.log("Received Red parameters:", updatedParameters);
 
-    // Convert JSON object to string
-    const data = JSON.stringify(updatedParameters, null, 2);
+    // Overwrite file with new data
+    fs.writeFile(
+      "redParameters.json",
+      JSON.stringify(req.body, null, 2),
+      (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send(err);
+        }
+        res.send({ message: "JSON received and stored." });
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to update the Red parameter
+app.post("/api/inputredparameters", async (req, res) => {
+  try {
+    const updatedParameters = req.body;
+    console.log("Received Red parameters:", updatedParameters);
 
     // Write JSON string to a file
     fs.writeFile(
@@ -170,6 +158,38 @@ app.post("/api/redparameters", async (req, res) => {
     );
   } catch (error) {
     console.error(error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to create a network based on parameters from 'red1' in redParameters.json
+app.post("/api/redparameters", (req, res) => {
+  try {
+    const redParameters = JSON.parse(
+      fs.readFileSync("redParameters.json", "utf8")
+    );
+
+    const red1 = redParameters.reds.find((red) => red.redId === "red1");
+
+    if (!red1) {
+      throw new Error("red1 not found in redParameters.json");
+    }
+
+    const nodesNumber = red1.nodeCount;
+    const chainId = red1.chainId;
+
+    if (isNaN(nodesNumber) || isNaN(chainId)) {
+      throw new Error(
+        "Invalid 'nodesNumber' or 'chainId' for red1. Both should be numbers."
+      );
+    }
+
+    createNetwork(nodesNumber, chainId);
+
+    res
+      .status(200)
+      .send("Network has been successfully created with red1 parameters.");
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
