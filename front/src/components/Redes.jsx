@@ -204,24 +204,11 @@ export function Redes() {
     setCreationMessage("");
 
     try {
-      // Fetch the latest redParameters.json data
-      const redParamsResponse = await fetch(
-        "http://localhost:3000/api/inputredparameters"
-      );
-      if (!redParamsResponse.ok) {
-        throw new Error(
-          `Error fetching red parameters: ${redParamsResponse.status}`
-        );
-      }
-      const redParameters = await redParamsResponse.json();
-
-      // Make a POST request to create a red with the fetched data
       const response = await fetch("http://localhost:3000/api/redparameters", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(redParameters), // Use redParameters here
       });
 
       if (!response.ok) {

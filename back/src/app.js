@@ -9,19 +9,13 @@ const {
 } = require("./services/networks.service");
 
 const network = require("./ethers/config");
-
 const app = express();
+const fs = require("fs");
 
-// Middleware to parse JSON bodies
 app.use(express.json());
-
-// Middleware to enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
 
-// Create a new Web3 instance connected to a local Ethereum node
 const web3 = new Web3("http://localhost:8545");
-
-const fs = require("fs");
 
 // Route to get a list of networks
 app.get("/api/networks", (req, res) => {
@@ -29,7 +23,8 @@ app.get("/api/networks", (req, res) => {
     const networks = getNetworksList();
     res.status(200).json(networks);
   } catch (error) {
-    res.status(500).json(error);
+    console.error("Error getting networks:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -169,27 +164,21 @@ app.post("/api/redparameters", (req, res) => {
       fs.readFileSync("redParameters.json", "utf8")
     );
 
-    const red1 = redParameters.reds.find((red) => red.redId === "red1");
-
-    if (!red1) {
-      throw new Error("red1 not found in redParameters.json");
+    if (!Array.isArray(redParameters.reds)) {
+      throw new Error("No reds array found in redParameters.json");
     }
 
-    const nodesNumber = red1.nodeCount;
-    const chainId = red1.chainId;
+    redParameters.reds.forEach((red) => {
+      const { nodeCount, chainId } = red;
 
-    if (isNaN(nodesNumber) || isNaN(chainId)) {
-      throw new Error(
-        "Invalid 'nodesNumber' or 'chainId' for red1. Both should be numbers."
-      );
-    }
+      createNetwork(nodeCount, chainId);
+    });
 
-    createNetwork(nodesNumber, chainId);
-
-    res
-      .status(200)
-      .send("Network has been successfully created with red1 parameters.");
+    res.status(200).json({
+      message: "Networks have been successfully created for all reds.",
+    });
   } catch (error) {
+    console.error("Error creating networks:", error);
     res.status(500).json({ error: error.message });
   }
 });
