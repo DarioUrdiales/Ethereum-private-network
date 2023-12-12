@@ -321,7 +321,7 @@ export function Redes() {
             className="btn btn-success mt-4 me-2"
             onClick={createRed}
             disabled={creatingRed}>
-            {creatingRed ? "Creating..." : "Create Red"}
+            {creatingRed ? "Creating..." : "Create Private Red"}
           </button>
         </div>
         {creationMessage && (
