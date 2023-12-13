@@ -2,9 +2,19 @@
   background-image: url("./img/Ethereum3.png");
   background-size: cover;
   background-position: center;
-  height: 700px; /* set the height of the div */
+  height: 700px;
   width: 100%;
   object-fit: cover;
+}
+
+.background-eth-faucet {
+  background-image: url("./img/eth-faucet.png");
+  background-size: cover;
+  background-position: center;
+  height: 400px; /* set the height of the div */
+  width: 400px;
+  object-fit: cover;
+  margin-top: 5%;
 }
 
 .full-height {
@@ -24,17 +34,17 @@
 
 .div-cent-dcha {
   position: absolute;
-  top:50%;
+  top: 50%;
   left: 85%;
   transform: translate(-50%, -50%);
 }
 
 .text-content-build {
-  font-family: 'Orbitron', sans-serif; 
-} 
+  font-family: "Orbitron", sans-serif;
+}
 
 .text-content-eth {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 30px;
 }
 
@@ -74,5 +84,86 @@
 
   animation-range: entry 25% cover 50%;
   animation-fill-mode: both;
+}
 
+/* styles.css */
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+}
+
+.white-text {
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.black-text {
+  color: rgb(3, 3, 3);
+  font-family: Arial, sans-serif;
+}
+
+.large-text {
+  font-size: 32px; /* Large text */
+}
+
+.medium-text {
+  font-size: 24px; /* Medium text */
+}
+
+
+.small-text {
+  font-size: 14px; /* Small text */
+}
+.team {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 80px;
+}
+.member {
+  margin: 10px;
+  padding: 30px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  justify-content: center;
+  width: calc(35% - 120px);
+  height: calc(10% - 5px);
+}
+
+.member:hover {
+  transform: scale(1.06);
+}
+
+.image img {
+  max-width: 100%;
+  border-radius: 3%;
+}
+
+.info h2 {
+  margin: 10px 0;
+}
+
+.social a {
+  margin: 2px;
+  text-decoration: none;
+  color: #fff;
+  background-color: #333;
+}
+.form-group label {
+  font-weight: bold;
+  font-size: 1.35rem;
+}
+
+#chain-id {
+  font-size: calc(1rem + 3pt);
+}
+
+#node-count {
+  font-size: calc(1rem + 3pt);
 }

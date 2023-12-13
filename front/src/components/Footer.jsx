@@ -1,54 +1,88 @@
+import React from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
+
 export function Footer() {
-    return (
-    <footer className="text-center text-lg-start bg-body-tertiary text-white bg-dark ">
-      <section className="d-flex justify-content-center justify-content-lg-between border-bottom ">
-        <div className="container text-center text-md-start mt-5">
-          <div className="row mt-3">
-            <div className="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-              <h6 className="text-uppercase fw-bold mb-4">
-                <img x="0px" y="0px" width="40" height="40" src="./img/cadena-de-bloques.png" alt="Bloques"></img> 
+  return (
+    <footer className="bg-dark text-white py-5">
+      <div className="container">
+        <div className="row">
+          <div className="col-xl-3 mx-auto mb-10">
+            <div className="d-flex align-items-center">
+              <img
+                x="0px"
+                y="0px"
+                width="40"
+                height="40"
+                src="./img/codecriptoacademy.png"
+                alt="Bloques"
+              />
+              <a
+                href="https://codecrypto.academy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white text-decoration-none mr-3">
                 codecrypto.academy
-              </h6>
-              <p>
-                 Masters en Blockchain & Web3 <br/>
-                 Sé referente Blockchain en 12 meses <br/>
-                 100+ Alumnos Formados 8º Ed <br/>
-                 CodeCrypto World Podcast
-              </p>
+              </a>
             </div>
-
-            <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-              <h6 className="text-uppercase fw-bold mb-4">
-                Desarroladores
-              </h6>
-              <p>
-                <a href="https://www.linkedin.com/in/alejandrodelmedico/" className="text-reset">Alejandro Del Medico</a>
-              </p>
-              <p>
-                <a href="https://www.linkedin.com/in/jackybarraza/" className="text-reset">Jacky Barraza</a>
-              </p>
-              <p>
-                <a href="https://www.linkedin.com/in/dariourdiales/" className="text-reset">Dario Rodriguez</a>
-              </p>
-              <p>
-                <a href="https://www.linkedin.com/in/natalia-molina-fernandez/" className="text-reset">Natalia Molina</a>
-              </p>
-            </div>
-
-            <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-              <h6 className="text-uppercase fw-bold mb-4">Contacto</h6>
-              <p><i className="fas fa-home me-3"></i> Madrid, ESP</p>
-              <p>
-                <i className="fas fa-envelope me-3"></i>
-                codecrypto@codecrypto.com
-              </p>
-              <p><i className="fas fa-phone me-3"></i> +34 654 768 987</p>
-            </div>
-
+            <p>
+              Masters en Blockchain & Web3 <br />
+              Sé referente Blockchain en 12 meses <br />
+              100+ Alumnos Formados 8º Ed <br />
+              CodeCrypto World Podcast
+            </p>
           </div>
-
+          <div className="col-md-4">
+            <h5 className="fw-bold">Who we are?</h5>
+            {/* Use the Link component to navigate to the Team component */}
+            <ul className="list-unstyled">
+              <li>
+                <Link to="/team" className="text-white text-decoration-none">
+                  Team
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://medium.com/@techieesp/seguridad-en-tu-billetera-digital-metamask-adb51f446504"
+                  className="text-white text-decoration-none">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://open.spotify.com/show/4sh7lfaLPWjScBNBfcF3lu"
+                  className="text-white text-decoration-none">
+                  Podcast
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/cheetah-alo/EthereumPrivateRed/branches"
+                  className="text-white text-decoration-none">
+                  GitHub
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="col-md-4">
+            <h5 className="fw-bold">Contact Us</h5>
+            <address>
+              <i className="fas fa-home me-2"></i> Madrid, ESP <br />
+              <i className="fas fa-envelope me-2"></i> codecrypto@codecrypto.com{" "}
+              <br />
+              <i className="fas fa-phone me-2"></i> +34 654 768 987
+            </address>
+          </div>
         </div>
-      </section>
+        <hr className="my-4" /> {/* Add a horizontal line for separation */}
+        <div className="row">
+          <div className="col-md-12 text-center">
+            <p>
+              &copy; {new Date().getFullYear()} codecrypto.academy | All Rights
+              Reserved
+            </p>
+          </div>
+        </div>
+      </div>
     </footer>
-    )
+  );
 }

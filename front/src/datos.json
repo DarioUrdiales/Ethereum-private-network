@@ -1,0 +1,52 @@
+{
+  "equipoData": [
+    {
+      "nombre": "Claudio Briceño",
+      "imagen": "../img/team/claudio.png",
+      "phrase": "Tiene dos vicios confesables: la Tecnología y las Alitas de Pollo",
+      "rol": "Product Owner",
+      "linkedin": "https://www.linkedin.com/in/claudiobriceno/",
+      "twitter": "https://twitter.com/ClaudioBriceno8"
+    },
+    {
+      "nombre": "Jose Viejo",
+      "imagen": "../img/team/jose.png",
+      "rol": "Team Delivery Lead",
+      "phrase": "Fuente de sabiduria de coding y la vida",
+      "linkedin": "https://www.linkedin.com/in/jose-viejo-huerta/",
+      "github": "https://github.com/Jviejo"
+    },
+    {
+      "nombre": "Natalia Molina",
+      "imagen": "../img/team/natalia.png",
+      "phrase": "El buen rollo",
+      "rol": "Developer",
+      "linkedin": "https://www.linkedin.com/in/natalia-molina-fernandez/",
+      "github": "https://github.com/natalia96mf"
+    },
+    {
+      "nombre": "Dario Rodriguez",
+      "imagen": "../img/team/dario.png",
+      "phrase": "El buen rollo",
+      "rol": "Developer",
+      "linkedin": "https://www.linkedin.com/in/dariourdiales/",
+      "github": "https://github.com/DarioUrdiales"
+    },
+    {
+      "nombre": "Jacky Barraza",
+      "rol": "Developer",
+      "imagen": "../img/team/jacky.png",
+      "phrase": "La chama",
+      "linkedin": "https://www.linkedin.com/in/jackybarraza/",
+      "github": "https://github.com/cheetah-alo/"
+    },
+    {
+      "nombre": "A. Del Medico",
+      "imagen": "../img/team/ale.png",
+      "phrase": "El chamo",
+      "rol": "Developer",
+      "linkedin": "https://www.linkedin.com/in/alejandrodelmedico/",
+      "github": "https://github.com/aledelme"
+    }
+  ]
+}
