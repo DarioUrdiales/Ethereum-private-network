@@ -48,12 +48,6 @@ export function Faucet() {
     });    
   })
 
-  useEffect(() =>{
-    setTimeout(() => {
-      setLoadingInvokeFaucet(false); // Una vez completada la operación, se establece loading en false
-    }, 9000);
-  })
-
   /**
    * Fetches the Ethereum account's balance.
    */
@@ -122,11 +116,14 @@ export function Faucet() {
 
     try {
       const response = await fetch(apiUrl);
+      
       if (response.ok) {
+        //const tx = await response.json();
         setTimeout(() => {
-          setDivTxOK(true)
+          setDivTxOK(true);
           setLoadingInvokeFaucet(false);
-        }, 9000)
+          fetchBalance();
+        }, 14000)
         const tx = await response.json();
         console.log(tx);
         
@@ -201,18 +198,11 @@ export function Faucet() {
                     <Spinner animation="grow" role="status">
                       <span className="visually-hidden">Realizando transacción, espere por favor</span>
                     </Spinner>
-                      <span className="pl-3">Realizando transacción, espere por favor</span>
+                      <span className="p-3">Realizando transacción, espere por favor</span>
                     </div>
                   ) : (
                     "Get faucet token!"
                   )}
-                </Button>
-              </div>
-              <div className="d-grid gap-2">
-                <Button
-                  onClick={fetchBalance}
-                  className="btn btn-secondary mt-3 fs-4">
-                  Check my balance
                 </Button>
               </div>
             </CustomCard>
@@ -220,8 +210,10 @@ export function Faucet() {
             {divTxOK && (
               <div className="alert alert-success mt-3 border border-success" 
                    role="alert" >
-                <h5 className="alert-heading">Transacción realizada correctamente</h5>
-                <h6>Haz click en <b>"Check my balance"</b> para comprobar tu nuevo balance</h6>
+                <h5 className="alert-heading"><b>Transacción realizada correctamente</b></h5>
+                <div>
+                  Espera unos minutos antes de realizar una nueva transacción
+                </div>
               </div>
             )}
             <div className="mt-4">
