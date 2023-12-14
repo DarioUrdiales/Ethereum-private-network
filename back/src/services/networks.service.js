@@ -143,9 +143,9 @@ const randomIp = (nodeIp, networkFile) => {
   const randomNumber = Math.floor(randomFraction * (max - min + 1)) + min;
   const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.') + 1) + randomNumber.toString();
  
-  if (networkFileSerialized.includes(newIp)) randomIp(nodeIp, networkFile);
-
-  return newIp;
+  if (!networkFileSerialized.includes(newIp)) return newIp;
+  
+  randomIp(nodeIp, networkFile);
 }
 
 const execute = (command) => {
