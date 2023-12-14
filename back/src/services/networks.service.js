@@ -75,7 +75,7 @@ const addNode = (chainId, nodesCount) => {
   if (!currentNetwork) return;
 
   // Paramos la red  
-  stopNetwork(chainId);
+  // stopNetwork(chainId);
 
   // Creamos el nuevo nodo y lo añadimos al docker-compose.yaml 
   for (let i = 1; i <= nodesCount; i++) {
@@ -83,9 +83,9 @@ const addNode = (chainId, nodesCount) => {
   }
 
   // Arrancamos la red con el nuevo docker-compose.yaml
-  setTimeout(() => {
-    startNetwork(chainId);
-  }, 5000);
+  // setTimeout(() => {
+  //   startNetwork(chainId);
+  // }, 5000);
 }
 
 /**
@@ -130,18 +130,19 @@ const createNode = (chainId, nodeNumber) => {
   
   const newNetworkFile = yaml.dump(networkFile);
 
-  fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');
+  fs.writeFileSync(`../nodos/blockchain-${chainId}/new-docker-compose.yaml`, newNetworkFile, 'utf8');
 }
 
 const randomIp = (nodeIp, networkFile) => {
   const networkFileSerialized = JSON.stringify(networkFile);
+  
   const randomFraction = Math.random();
 
   const min = 10;
   const max = 254;
   const randomNumber = Math.floor(randomFraction * (max - min + 1)) + min;
-  const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.') + 1) + randomNumber;
-
+  const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.') + 1) + randomNumber.toString();
+ 
   if (networkFileSerialized.includes(newIp)) randomIp(nodeIp, networkFile);
 
   return newIp;
