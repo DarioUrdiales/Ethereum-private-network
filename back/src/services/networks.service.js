@@ -75,7 +75,7 @@ const addNode = (chainId, nodesCount) => {
   if (!currentNetwork) return;
 
   // Paramos la red  
-  // stopNetwork(chainId);
+  stopNetwork(chainId);
 
   // Creamos el nuevo nodo y lo añadimos al docker-compose.yaml 
   for (let i = 1; i <= nodesCount; i++) {
@@ -83,9 +83,9 @@ const addNode = (chainId, nodesCount) => {
   }
 
   // Arrancamos la red con el nuevo docker-compose.yaml
-  // setTimeout(() => {
-  //   startNetwork(chainId);
-  // }, 5000);
+  setTimeout(() => {
+    startNetwork(chainId);
+  }, 5000);
 }
 
 /**
