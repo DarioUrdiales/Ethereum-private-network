@@ -120,7 +120,7 @@ const createNode = (chainId, nodeNumber) => {
   
   const newNode = JSON.parse(JSON.stringify(nodesList[nodesList.length - 1]));
   const nodeIp = String(newNode.networks[`priv-eth-net-${chainId}`].ipv4_address);
-  const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.')) + '.' + randomIp();
+  const newIp = randomIp(nodeIp, networkFile);
 
   newNode.hostname = `nodo-${nodeNumber}`;
   newNode.networks[`priv-eth-net-${chainId}`].ipv4_address = newIp;
@@ -133,14 +133,18 @@ const createNode = (chainId, nodeNumber) => {
   fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');
 }
 
-const randomIp = () => {
+const randomIp = (nodeIp, networkFile) => {
+  const networkFileSerialized = JSON.stringify(networkFile);
   const randomFraction = Math.random();
 
   const min = 10;
   const max = 254;
   const randomNumber = Math.floor(randomFraction * (max - min + 1)) + min;
+  const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.') + 1) + randomNumber;
 
-  return randomNumber;
+  if (networkFileSerialized.includes(newIp)) randomIp(nodeIp, networkFile);
+
+  return newIp;
 }
 
 const execute = (command) => {
