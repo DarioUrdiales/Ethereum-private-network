@@ -130,7 +130,7 @@ const createNode = (chainId, nodeNumber) => {
   
   const newNetworkFile = yaml.dump(networkFile);
 
-  fs.writeFileSync(`../nodos/blockchain-${chainId}/new-docker-compose.yaml`, newNetworkFile, 'utf8');
+  fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');
 }
 
 const randomIp = (nodeIp, networkFile) => {
