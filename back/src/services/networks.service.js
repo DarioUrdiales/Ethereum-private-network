@@ -84,7 +84,7 @@ const addNode = (chainId, nodesCount) => {
 
   // Arrancamos la red con el nuevo docker-compose.yaml
   setTimeout(() => {
-    startNetwork(chainId);
+    upNetwork(chainId);
   }, 5000);
 }
 
@@ -103,6 +103,16 @@ const stopNetwork = (chainId) => {
  * @param {number} chainId - El id de la blockchain a iniciar.
  */
 const startNetwork = (chainId) => {
+  const command = `cd ../nodos/blockchain-${chainId} && docker-compose start`;
+  
+  execute(command);
+}
+
+/**
+ * Levanta la blockchain correspondiente al chainId especificado.
+ * @param {number} chainId - El id de la blockchain a iniciar.
+ */
+const upNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose up`;
   
   execute(command);
@@ -167,5 +177,7 @@ module.exports = {
   getNetworksList,
   removeNetwork,
   createNetwork,
-  addNode
+  addNode,
+  startNetwork,
+  stopNetwork
 };

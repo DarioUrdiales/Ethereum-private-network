@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
-const { getNetworksList, removeNetwork, createNetwork, addNode } = require("./services/networks.service");
+const { getNetworksList, removeNetwork, createNetwork, addNode, stopNetwork, startNetwork } = require("./services/networks.service");
 const fs = require("fs")
 
 
@@ -16,7 +16,6 @@ app.use(express.json());
 app.use(cors());
 
 const web3 = new Web3("http://localhost:8670");
-
 
 // Route to get a list of networks
 app.get("/api/networks", (req, res) => {
@@ -55,6 +54,30 @@ app.post("/api/networks/remove/:chainId", (req, res) => {
     removeNetwork(chainId);
 
     res.status(200).send("Network has been succesfully removed");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/start/:chainId", (req, res) => {
+  try {
+    const chainId = +req.params.chainId;
+
+    startNetwork(chainId);
+
+    res.status(200).send("Network has been succesfully started");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/stop/:chainId", (req, res) => {
+  try {
+    const chainId = +req.params.chainId;
+
+    stopNetwork(chainId);
+
+    res.status(200).send("Network has been succesfully stopped");
   } catch (error) {
     res.status(500).json(error);
   }
