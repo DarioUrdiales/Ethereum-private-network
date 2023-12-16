@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import "../index.css";
+import { useState, useEffect } from "react";
+import "../../index.css";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Component for managing Red specifications.
  * Allows users to add, edit, delete, and submit Red specifications.
  * It also enables creating a Red by making an API call.
  */
-export function Redes() {
+export function CreateNetwork() {
   // State for storing the current input values
   const [newRed, setNewRed] = useState({ chainId: "", nodeCount: 0 });
 
@@ -22,6 +23,8 @@ export function Redes() {
   // States for managing the creation process of a Red
   const [creatingRed, setCreatingRed] = useState(false);
   const [creationMessage, setCreationMessage] = useState("");
+
+  const navigate = useNavigate();
 
   // Fetch Red parameters on component mount
   useEffect(() => {
@@ -217,6 +220,9 @@ export function Redes() {
 
       const result = await response.json();
       setCreationMessage(`Red created successfully: ${JSON.stringify(result)}`);
+      setTimeout(() => {        
+        navigate('/redes');
+      }, 5000);
     } catch (error) {
       console.error("Error creating Red:", error);
       setCreationMessage(`Error creating Red: ${error.message}`);
@@ -224,6 +230,10 @@ export function Redes() {
       setCreatingRed(false);
     }
   };
+
+  const goBack = () => {
+    navigate('/redes');
+  }
 
   return (
     <div
@@ -316,12 +326,17 @@ export function Redes() {
           onClick={submitRedParameters}>
           Submit Red Parameters
         </button>
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end gap-2">
           <button
-            className="btn btn-success mt-4 me-2"
+            className="btn btn-success mt-4"
             onClick={createRed}
             disabled={creatingRed}>
             {creatingRed ? "Creating..." : "Create Private Red"}
+          </button>
+          <button
+            className="btn btn-secondary mt-4"
+            onClick={goBack}>
+            Back
           </button>
         </div>
         {creationMessage && (

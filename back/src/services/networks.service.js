@@ -84,7 +84,36 @@ const addNode = (chainId, nodesCount) => {
 
   // Arrancamos la red con el nuevo docker-compose.yaml
   setTimeout(() => {
-    startNetwork(chainId);
+    upNetwork(chainId);
+  }, 5000);
+}
+
+/**
+ * Añade una nueva cuenta a la blockchain especificada.
+ * @param {number} chainId - El id de la blockchain a la que se añadirá el nodo.
+ * @param {string} account - La dirección de la cuenta a añadir.
+ */
+const addAccount = (chainId, account) => {
+  if (!account || account === '') return;
+
+  downNetwork(chainId);
+
+  const pathNetworkFile = `../nodos/blockchain-${chainId}/genesis.json`;
+  const genesisFile = JSON.parse(fs.readFileSync(pathNetworkFile, 'utf8'));
+  const formattedAddress = account.substring(2);
+  console.log({formattedAddress}); 
+  console.log(genesisFile.alloc);
+  
+  genesisFile.alloc[formattedAddress] = {
+    balance: "2000000000000000000000000"
+  }
+
+  const newGenesisFile = JSON.stringify(genesisFile, null, 2);
+
+  fs.writeFileSync(`../nodos/blockchain-${chainId}/genesis.json`, newGenesisFile, 'utf8');
+
+  setTimeout(() => {
+    upNetwork(chainId);
   }, 5000);
 }
 
@@ -103,6 +132,26 @@ const stopNetwork = (chainId) => {
  * @param {number} chainId - El id de la blockchain a iniciar.
  */
 const startNetwork = (chainId) => {
+  const command = `cd ../nodos/blockchain-${chainId} && docker-compose start`;
+  
+  execute(command);
+}
+
+/**
+ * Elimina la blockchain correspondiente al chainId especificado.
+ * @param {number} chainId - El id de la blockchain a eliminar.
+ */
+const downNetwork = (chainId) => {
+  const command = `cd ../nodos/blockchain-${chainId} && docker-compose down`;
+  
+  execute(command);
+}
+
+/**
+ * Levanta la blockchain correspondiente al chainId especificado.
+ * @param {number} chainId - El id de la blockchain a iniciar.
+ */
+const upNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose up`;
   
   execute(command);
@@ -167,5 +216,8 @@ module.exports = {
   getNetworksList,
   removeNetwork,
   createNetwork,
-  addNode
+  addNode,
+  addAccount,
+  startNetwork,
+  stopNetwork
 };

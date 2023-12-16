@@ -11,7 +11,7 @@ GET http://localhost:3000/api/networks
 
 ###
 
-POST http://localhost:3000/api/networks/addNode/7000/4
+POST http://localhost:3000/api/networks/add-node/7000/4
 
 ###
 
