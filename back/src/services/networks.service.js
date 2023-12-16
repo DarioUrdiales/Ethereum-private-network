@@ -89,6 +89,35 @@ const addNode = (chainId, nodesCount) => {
 }
 
 /**
+ * Añade una nueva cuenta a la blockchain especificada.
+ * @param {number} chainId - El id de la blockchain a la que se añadirá el nodo.
+ * @param {string} account - La dirección de la cuenta a añadir.
+ */
+const addAccount = (chainId, account) => {
+  if (!account || account === '') return;
+
+  downNetwork(chainId);
+
+  const pathNetworkFile = `../nodos/blockchain-${chainId}/genesis.json`;
+  const genesisFile = JSON.parse(fs.readFileSync(pathNetworkFile, 'utf8'));
+  const formattedAddress = account.substring(2);
+  console.log({formattedAddress}); 
+  console.log(genesisFile.alloc);
+  
+  genesisFile.alloc[formattedAddress] = {
+    balance: "2000000000000000000000000"
+  }
+
+  const newGenesisFile = JSON.stringify(genesisFile, null, 2);
+
+  fs.writeFileSync(`../nodos/blockchain-${chainId}/genesis.json`, newGenesisFile, 'utf8');
+
+  setTimeout(() => {
+    upNetwork(chainId);
+  }, 5000);
+}
+
+/**
  * Detiene la blockchain correspondiente al chainId especificado.
  * @param {number} chainId - El id de la blockchain a detener.
  */
@@ -104,6 +133,16 @@ const stopNetwork = (chainId) => {
  */
 const startNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose start`;
+  
+  execute(command);
+}
+
+/**
+ * Elimina la blockchain correspondiente al chainId especificado.
+ * @param {number} chainId - El id de la blockchain a eliminar.
+ */
+const downNetwork = (chainId) => {
+  const command = `cd ../nodos/blockchain-${chainId} && docker-compose down`;
   
   execute(command);
 }
@@ -178,6 +217,7 @@ module.exports = {
   removeNetwork,
   createNetwork,
   addNode,
+  addAccount,
   startNetwork,
   stopNetwork
 };

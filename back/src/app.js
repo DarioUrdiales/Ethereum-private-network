@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
-const { getNetworksList, removeNetwork, createNetwork, addNode, stopNetwork, startNetwork } = require("./services/networks.service");
+const { getNetworksList, removeNetwork, createNetwork, addNode, addAccount, stopNetwork, startNetwork } = require("./services/networks.service");
 const fs = require("fs")
 
 
@@ -29,7 +29,7 @@ app.get("/api/networks", (req, res) => {
 });
 
 // Route to add a node to a network
-app.post("/api/networks/addNode/:chainId/:nodesCount", (req, res) => {
+app.post("/api/networks/add-node/:chainId/:nodesCount", (req, res) => {
   try {
     const chainId = +req.params.chainId;
     const nodesCount = +req.params.nodesCount;
@@ -39,7 +39,23 @@ app.post("/api/networks/addNode/:chainId/:nodesCount", (req, res) => {
     res
       .status(200)
       .send(
-        `Node has been succesfully added to the network with chain id ${chainId}`
+        `Nodes has been succesfully added to the network with chain id ${chainId}`
+      );
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/add-account/", (req, res) => {
+  try {
+    const { chainId, account } = req.body;
+    
+    addAccount(chainId, account);
+
+    res
+      .status(200)
+      .send(
+        `The account ${account} has been succesfully added to the network with chain id ${chainId}`
       );
   } catch (error) {
     res.status(500).json(error);
