@@ -156,7 +156,7 @@ export function NetworkList() {
         </div>
 
         <div className="border border-2 rounded p-3">
-          <h2>Networks list</h2>
+          <h2 className="text-content-build">Networks list</h2>
           <table className="table table-striped">
             <thead>
               <tr className="align-middle">

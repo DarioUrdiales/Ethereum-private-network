@@ -167,3 +167,8 @@ header {
 #node-count {
   font-size: calc(1rem + 3pt);
 }
+
+.no-underline {
+  text-decoration: none;
+  color: inherit;
+}

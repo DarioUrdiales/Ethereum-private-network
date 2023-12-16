@@ -102,19 +102,23 @@ app.post("/api/networks/stop/:chainId", (req, res) => {
 // Route to get information about the last 10 blocks
 app.get("/api/blocks", async (req, res) => {
   try {
-    const currentBlock = await network.getBlockNumber();
-
+    const currentBlockNumber = await web3.eth.getBlockNumber();
     const blocks = [];
+
     for (let index = 0; index < 10; index++) {
-      const blockNumber = currentBlock - index;
-      if (blockNumber < 1) break;
-      const block = await network.getBlock(blockNumber);
-      blocks.push(block);
+      const blockNumber = currentBlockNumber - BigInt(index);
+      if (blockNumber < 0) break;
+      const block = await web3.eth.getBlock(blockNumber);
+      blocks.push({
+        number: block.number.toString(), // Convertir a cadena
+        timestamp: block.timestamp.toString(), // Convertir a cadena
+        transactions: block.transactions
+      });
     }
 
     res.json(blocks);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -122,7 +126,9 @@ app.get("/api/blocks", async (req, res) => {
 app.get("/api/blocks/:block", async (req, res) => {
   const blockNumber = req.params.block;
   try {
-    res.json(await network.getBlock(parseInt(blockNumber)));
+    const block = await web3.eth.getBlock(parseInt(blockNumber));
+    const serializedBlock = JSON.parse(JSON.stringify(block, (key, value) => typeof value === 'bigint' ? value.toString() : value));
+    res.json(serializedBlock);
   } catch (error) {
     res.status(500).json(error.message);
   }
@@ -132,7 +138,8 @@ app.get("/api/blocks/:block", async (req, res) => {
 app.get("/api/tx/:tx", async (req, res) => {
   const tx = req.params.tx;
   try {
-    res.json(await network.getTransaction(tx));
+    const serializedTx = JSON.parse(JSON.stringify(await web3.eth.getTransaction(tx), (key, value) => typeof value === 'bigint' ? value.toString() : value));
+    res.json(serializedTx);
   } catch (error) {
     res.status(500).json(error.message);
   }
