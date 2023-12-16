@@ -12,13 +12,12 @@ export function Block(){
     })
     
     if (isLoading)
-        return <h2>Loading...</h2>
+        return <h2 className="text-content-build">Loading...</h2>
     if (isError)
         return <h2>{error.toString()}</h2>
 
-    console.log(data)
     return <div className="border border-2 rounded p-3">
-        <h2>Bloque #{block}</h2>
+        <h2 className="text-content-build">Bloque #{block}</h2>
         <table className="table">
             <tbody>
                 <tr>
@@ -30,10 +29,6 @@ export function Block(){
                     <td>{data.parentHash}</td>
                 </tr>
                 <tr>
-                    <th>Validador</th>
-                    <td><Link to={`/explorer/address/${data.miner}`}>{data.miner}</Link></td>
-                </tr>
-                <tr>
                     <th>Gas usado</th>
                     <td>{data.gasUsed} wei</td>
                 </tr>
@@ -42,12 +37,19 @@ export function Block(){
                     <td>{getTimeAgo(data.timestamp)}</td>
                 </tr>
                 <tr>
-                    <th>Número de transacciones</th>
+                    <th>Transacciones</th>
                     <td>
-                        {data.transactions.length}
+                        {data.transactions && data.transactions.length > 0 ? (
                         <ul>
-                            {data.transactions.map((t,i) => <li key={i}><Link to={`/explorer/tx/${t}`}>{t}</Link></li>)}
+                            {data.transactions && data.transactions.map((t, i) => (
+                            <p key={i}><Link to={`/explorer/tx/${t}`}>{t}</Link></p>
+                            ))}
                         </ul>
+                        ): (
+                        <ul>
+                            <p>No se han realizado transacciones</p>
+                        </ul>
+                        )}
                     </td>
                 </tr>
             </tbody>

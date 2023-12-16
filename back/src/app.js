@@ -1,12 +1,13 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
-const { getNetworksList, removeNetwork, createNetwork, addNode } = require("./services/networks.service");
+const { getNetworksList, removeNetwork, createNetwork, addNode, addAccount, stopNetwork, startNetwork } = require("./services/networks.service");
 const fs = require("fs")
 
 
-const key_miner = JSON.parse(fs.readFileSync("../nodos/initial-blockchain/keystore/UTC--2023-12-12T19-46-56.148829932Z--ea4d41bf2f58cac79b13aabb143f01ee9e994ddc"))
-
+const key_miner = JSON.parse(fs.readFileSync("../nodos/initial-blockchain/keystore/UTC--2023-12-14T12-46-05.565502610Z--c18727dab5fe77c472137437e8955d96d4db9407"))
+const passwd_miner = fs.readFileSync("../nodos/initial-blockchain/pwd.txt");
+console.log(passwd_miner)
 
 const network = require("./ethers/config");
 const app = express();
@@ -14,8 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const web3 = new Web3("http://localhost:9201");
-
+const web3 = new Web3("http://localhost:8670");
 
 // Route to get a list of networks
 app.get("/api/networks", (req, res) => {
@@ -29,7 +29,7 @@ app.get("/api/networks", (req, res) => {
 });
 
 // Route to add a node to a network
-app.post("/api/networks/addNode/:chainId/:nodesCount", (req, res) => {
+app.post("/api/networks/add-node/:chainId/:nodesCount", (req, res) => {
   try {
     const chainId = +req.params.chainId;
     const nodesCount = +req.params.nodesCount;
@@ -39,7 +39,23 @@ app.post("/api/networks/addNode/:chainId/:nodesCount", (req, res) => {
     res
       .status(200)
       .send(
-        `Node has been succesfully added to the network with chain id ${chainId}`
+        `Nodes has been succesfully added to the network with chain id ${chainId}`
+      );
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/add-account/", (req, res) => {
+  try {
+    const { chainId, account } = req.body;
+    
+    addAccount(chainId, account);
+
+    res
+      .status(200)
+      .send(
+        `The account ${account} has been succesfully added to the network with chain id ${chainId}`
       );
   } catch (error) {
     res.status(500).json(error);
@@ -59,22 +75,50 @@ app.post("/api/networks/remove/:chainId", (req, res) => {
   }
 });
 
+app.post("/api/networks/start/:chainId", (req, res) => {
+  try {
+    const chainId = +req.params.chainId;
+
+    startNetwork(chainId);
+
+    res.status(200).send("Network has been succesfully started");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/networks/stop/:chainId", (req, res) => {
+  try {
+    const chainId = +req.params.chainId;
+
+    stopNetwork(chainId);
+
+    res.status(200).send("Network has been succesfully stopped");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 // Route to get information about the last 10 blocks
 app.get("/api/blocks", async (req, res) => {
   try {
-    const currentBlock = await network.getBlockNumber();
-
+    const currentBlockNumber = await web3.eth.getBlockNumber();
     const blocks = [];
+
     for (let index = 0; index < 10; index++) {
-      const blockNumber = currentBlock - index;
-      if (blockNumber < 1) break;
-      const block = await network.getBlock(blockNumber);
-      blocks.push(block);
+      const blockNumber = currentBlockNumber - BigInt(index);
+      if (blockNumber < 0) break;
+      const block = await web3.eth.getBlock(blockNumber);
+      blocks.push({
+        number: block.number.toString(), // Convertir a cadena
+        timestamp: block.timestamp.toString(), // Convertir a cadena
+        transactions: block.transactions
+      });
     }
 
     res.json(blocks);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -82,7 +126,9 @@ app.get("/api/blocks", async (req, res) => {
 app.get("/api/blocks/:block", async (req, res) => {
   const blockNumber = req.params.block;
   try {
-    res.json(await network.getBlock(parseInt(blockNumber)));
+    const block = await web3.eth.getBlock(parseInt(blockNumber));
+    const serializedBlock = JSON.parse(JSON.stringify(block, (key, value) => typeof value === 'bigint' ? value.toString() : value));
+    res.json(serializedBlock);
   } catch (error) {
     res.status(500).json(error.message);
   }
@@ -92,7 +138,8 @@ app.get("/api/blocks/:block", async (req, res) => {
 app.get("/api/tx/:tx", async (req, res) => {
   const tx = req.params.tx;
   try {
-    res.json(await network.getTransaction(tx));
+    const serializedTx = JSON.parse(JSON.stringify(await web3.eth.getTransaction(tx), (key, value) => typeof value === 'bigint' ? value.toString() : value));
+    res.json(serializedTx);
   } catch (error) {
     res.status(500).json(error.message);
   }
@@ -187,10 +234,11 @@ app.post("/api/redparameters", (req, res) => {
 
 app.get("/api/faucet/:address", async(req, res) => {
   try {
-    const account = await web3.eth.accounts.decrypt(key_miner, "53Z)^r2S5TUq8i_v")
+    const account = await web3.eth.accounts.decrypt(key_miner, passwd_miner)
+
     const gasPrice = await web3.eth.getGasPrice();
     const tx = {
-      chainId: 7000,
+      chainId: 8000,
       from: account.address,
       to: req.params.address,
       value: web3.utils.toWei('10', 'ether'),
@@ -202,8 +250,7 @@ app.get("/api/faucet/:address", async(req, res) => {
     const receipt = await JSON.stringify(web3.eth.sendSignedTransaction(signedTx.rawTransaction) , (key, value) => {
       return typeof value === 'bigint' ? value.toString() : value;
   });
-    
-    res.send(receipt)
+   res.send(receipt)
 
   } catch (err) {
     console.error(err);

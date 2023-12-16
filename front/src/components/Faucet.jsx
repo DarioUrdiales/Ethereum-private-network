@@ -48,12 +48,6 @@ export function Faucet() {
     });    
   })
 
-  useEffect(() =>{
-    setTimeout(() => {
-      setLoadingInvokeFaucet(false); // Una vez completada la operación, se establece loading en false
-    }, 9000);
-  })
-
   /**
    * Fetches the Ethereum account's balance.
    */
@@ -92,6 +86,7 @@ export function Faucet() {
           method: "eth_requestAccounts",
         });
         setAccount(accounts[0]);
+        setError(null)
       } catch (error) {
         setError("Failed to connect wallet.");
         console.error(error);
@@ -122,11 +117,14 @@ export function Faucet() {
 
     try {
       const response = await fetch(apiUrl);
+      setError(null)
       if (response.ok) {
+        //const tx = await response.json();
         setTimeout(() => {
-          setDivTxOK(true)
+          setDivTxOK(true);
           setLoadingInvokeFaucet(false);
-        }, 9000)
+          fetchBalance();
+        }, 14000)
         const tx = await response.json();
         console.log(tx);
         
@@ -141,100 +139,95 @@ export function Faucet() {
   }
 
   return (
-    <div
-      className="bg-dark min-vh-100 d-flex flex-column justify-content-center">
-      {" "}
-      <div className="container d-flex justify-content-center">
-        <div className="bg-dark">
-        </div>
-          <div className="row d-flex background-eth-faucet w-90 h-90"               >
+    <div>
+      <div className="bg-light min-vh-100 d-flex flex-column justify-content-center">
+        <div className="container d-flex justify-content-center">
+          <div className="bg-dark">
           </div>
-        <div className="row justify-content-center w-100 h-100">
-          <div className="col-lg-8 ">
-            {error && (
-              <div
-                className="alert alert-warning mt-3"
-                role="alert"
-                style={{
-                  borderRadius: "5px",
-                  backgroundColor: "#DABB9F",
-                  color: "#333",
-                  maxWidth: "1000px",
-                  margin: "0 auto",
-                }}>
-                {error}
-              </div>
-            )}
+            <div className="row d-flex background-eth-faucet w-90 h-90"               >
+            </div>
+          <div className="row justify-content-center w-100 h-100">
+            <div className="col-lg-8 ">
+              {error && (
+                <div
+                  className="alert alert-warning mt-3"
+                  role="alert"
+                  style={{
+                    borderRadius: "5px",
+                    backgroundColor: "#DABB9F",
+                    color: "#333",
+                    maxWidth: "1000px",
+                    margin: "0 auto",
+                  }}>
+                  {error}
+                </div>
+              )}
 
-            {/* Connect Wallet Button (Top Right) */}
-              <Button
-                onClick={connectWallet}
-                className="btn btn-primary fs-4 align-self-end mt-2 me-2">
-                Connect Wallet
-              </Button>
-
-            {/* Custom Card components */}
-            <CustomCard
-              title={`Address: ${account || "Not connected"}`}
-              background="#FFFFFF"
-              titleColor="#000000"
-            />
-
-            <CustomCard
-              title={`Balance: ${balance} ETH`}
-              background="#FFFFFF"
-              titleColor="#000000"
-            />
-            <CustomCard
-              title="Receive faucet ERC20 to your wallet"
-              style={{
-                color: "#FFFFFF",
-              }}>
-              <div className="d-grid gap-2 mt-10 fs-4">
+              {/* Connect Wallet Button (Top Right) */}
                 <Button
-                  onClick={invokeFaucet}
-                  className="btn btn-success mt-4 fs-4"
-                  disabled={loadingInvokeFaucet} // Deshabilitar el botón mientras se está cargando
-                >
-                  {loadingInvokeFaucet ? ( 
-                    <div>
-                    <Spinner animation="grow" role="status">
-                      <span className="visually-hidden">Realizando transacción, espere por favor</span>
-                    </Spinner>
-                      <span className="pl-3">Realizando transacción, espere por favor</span>
-                    </div>
-                  ) : (
-                    "Get faucet token!"
-                  )}
+                  onClick={connectWallet}
+                  className="btn btn-primary fs-4 align-self-end mt-2 me-2">
+                  Connect Wallet
                 </Button>
-              </div>
-              <div className="d-grid gap-2">
-                <Button
-                  onClick={fetchBalance}
-                  className="btn btn-secondary mt-3 fs-4">
-                  Check my balance
-                </Button>
-              </div>
-            </CustomCard>
-            {/* Go Home Button */}
-            {divTxOK && (
-              <div className="alert alert-success mt-3 border border-success" 
-                   role="alert" >
-                <h5 className="alert-heading">Transacción realizada correctamente</h5>
-                <h6>Haz click en <b>"Check my balance"</b> para comprobar tu nuevo balance</h6>
-              </div>
-            )}
-            <div className="mt-4">
-              <Link
-                to="/"
-                className="btn btn-dark fs-4"
+
+              {/* Custom Card components */}
+              <CustomCard
+                title={`Address: ${account || "Not connected"}`}
+                background="#FFFFFF"
+                titleColor="#000000"
+              />
+
+              <CustomCard
+                title={`Balance: ${balance} ETH`}
+                background="#FFFFFF"
+                titleColor="#000000"
+              />
+              <CustomCard
+                title="Receive faucet ERC20 to your wallet"
                 style={{
-                  borderRadius: "5px",
-                  maxWidth: "1000px",
-                  margin: "3 auto",
+                  color: "#FFFFFF",
                 }}>
-                Go Home
-              </Link>
+                <div className="d-grid gap-2 mt-10 fs-4">
+                  <Button
+                    onClick={invokeFaucet}
+                    className="btn btn-success mt-4 fs-4"
+                    disabled={loadingInvokeFaucet} // Deshabilitar el botón mientras se está cargando
+                  >
+                    {loadingInvokeFaucet ? ( 
+                      <div>
+                      <Spinner animation="grow" role="status">
+                        <span className="visually-hidden">Realizando transacción, espere por favor</span>
+                      </Spinner>
+                        <span className="p-3">Realizando transacción, espere por favor</span>
+                      </div>
+                    ) : (
+                      "Get faucet token!"
+                    )}
+                  </Button>
+                </div>
+              </CustomCard>
+              {/* Go Home Button */}
+              {divTxOK && (
+                <div className="alert alert-success mt-3 border border-success" 
+                    role="alert" >
+                  <h5 className="alert-heading"><b>Transacción realizada correctamente</b></h5>
+                  <div>
+                    Espera unos minutos antes de realizar una nueva transacción
+                  </div>
+                </div>
+              )}
+              <div className="mt-4">
+                <Link
+                  to="/"
+                  className="btn btn-dark fs-4"
+                  style={{
+                    borderRadius: "5px",
+                    maxWidth: "1000px",
+                    margin: "3 auto",
+                  }}>
+                  Go Home
+                </Link>
+              </div>
             </div>
           </div>
         </div>
