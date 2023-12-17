@@ -220,8 +220,8 @@ export function CreateNetwork() {
 
       const result = await response.json();
       setCreationMessage(`Red created successfully: ${JSON.stringify(result)}`);
-      setTimeout(() => {        
-        navigate('/redes');
+      setTimeout(() => {
+        navigate("/redes");
       }, 5000);
     } catch (error) {
       console.error("Error creating Red:", error);
@@ -232,8 +232,8 @@ export function CreateNetwork() {
   };
 
   const goBack = () => {
-    navigate('/redes');
-  }
+    navigate("/redes");
+  };
 
   return (
     <div
@@ -244,7 +244,7 @@ export function CreateNetwork() {
           <div className="col-lg-6">
             <div className="card mb-3">
               <div className="card-body text-center">
-                <h2 className="card-title mb-3">Manage Red</h2>
+                <h2 className="card-title mb-3">Administración de Redes</h2>
                 <div className="form-group mb-3">
                   <label htmlFor="chain-id" className="label-large">
                     Chain ID:
@@ -260,7 +260,7 @@ export function CreateNetwork() {
                 </div>
                 <div className="form-group mb-3">
                   <label htmlFor="node-count" className="label-large">
-                    Number of Nodes:
+                    Número de Nodos:
                   </label>
                   <input
                     id="node-count"
@@ -281,14 +281,14 @@ export function CreateNetwork() {
 
         {showSummary && (
           <>
-            <h4 className="mt-5 text-center">Red Specifications Summary</h4>
+            <h4 className="mt-5 text-center">Especificaciones de las Redes</h4>
             <table className="table table-bordered mt-2">
               <thead>
                 <tr>
                   <th>Red ID</th>
                   <th>Chain ID</th>
-                  <th>Node Count</th>
-                  <th>Actions</th>
+                  <th>Números de Nodos</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -301,12 +301,12 @@ export function CreateNetwork() {
                       <button
                         className="btn btn-info btn-sm me-2"
                         onClick={() => editRed(index)}>
-                        Edit
+                        Editar
                       </button>
                       <button
                         className="btn btn-danger btn-sm"
                         onClick={() => deleteRed(index)}>
-                        Delete
+                        Borrar
                       </button>
                     </td>
                   </tr>
@@ -319,12 +319,12 @@ export function CreateNetwork() {
         <button
           className="btn btn-secondary mt-4 me-2"
           onClick={() => setShowSummary(!showSummary)}>
-          {showSummary ? "Hide" : "Show"} Specifications
+          {showSummary ? "Hide" : "Show"} Especificaciones
         </button>
         <button
           className="btn btn-primary mt-4 me-2"
           onClick={submitRedParameters}>
-          Submit Red Parameters
+          Enviar los Parametros de la Red
         </button>
         <div className="d-flex justify-content-end gap-2">
           <button
@@ -333,9 +333,7 @@ export function CreateNetwork() {
             disabled={creatingRed}>
             {creatingRed ? "Creating..." : "Create Private Red"}
           </button>
-          <button
-            className="btn btn-secondary mt-4"
-            onClick={goBack}>
+          <button className="btn btn-secondary mt-4" onClick={goBack}>
             Back
           </button>
         </div>

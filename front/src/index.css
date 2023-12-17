@@ -113,9 +113,8 @@ header {
 }
 
 .medium-text {
-  font-size: 24px; /* Medium text */
+  font-size: 20px; /* Medium text */
 }
-
 
 .small-text {
   font-size: 14px; /* Small text */
@@ -171,4 +170,34 @@ header {
 .no-underline {
   text-decoration: none;
   color: inherit;
+}
+
+.card-frame {
+  border: 0px solid black;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+.navbar-brand,
+.nav-item.nav-link {
+  color: white !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: white;
+}
+
+/* Adjust the spacing as needed */
+.navbar-nav {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
