@@ -1,31 +1,54 @@
 import { Link } from "react-router-dom";
 import "../index.css";
+import datos from "../datos.json";
 
-function Logo() {
-  return (
-    <img
-      x="0px"
-      y="0px"
-      width="40"
-      height="40"
-      src="./img/eth.png"
-      alt="Ethereum Logo"
-      className="mr-3"></img>
-  );
+function Logo({ src, alt }) {
+  return <img src={src} alt={alt} className="logo mr-3" />;
 }
 
-
 export function Header() {
+  const isExternalLink = (url) => /^https?:\/\//.test(url);
+
   return (
-    <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-2 fixed-top border-bottom">
-        <div className="container-fluid d-flex justify-content-center">
-          <Logo className="mr-2"></Logo>
-          <Link to="/" className="navbar-brand p-2">
-            Ethereum Team Project
-          </Link>
+    <body>
+      <header />
+      <nav className="main-content navbar navbar-expand-lg ">
+        <div className="container-fluid">
+          <div className="d-flex align-items-center justify-content-start medium-text white-text ">
+            <Logo src="./img/codecriptoacademy.png" alt="Bloques" />
+            <Link to="/" className="nav-item nav-link">
+              <p className="mb-0">{datos.header.name}</p>
+            </Link>
+          </div>
+          <div className="navbar-nav mx-auto medium-text align-items-center">
+            <Logo src="./img/eth.png" alt="Ethereum Logo" />
+            <Link to="/" className="nav-item nav-link">
+              Proyecto: Crear Blockchains Privadas de Ethereum
+            </Link>
+          </div>
+          <div className="d-flex justify-content-end">
+            {datos.header.links.map((item, index) =>
+              isExternalLink(item.link) ? (
+                <a
+                  key={index}
+                  href={item.link}
+                  className="nav-item nav-link medium-text"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  {item.text}
+                </a>
+              ) : (
+                <Link
+                  key={index}
+                  to={item.link}
+                  className="nav-item nav-link medium-text">
+                  {item.text}
+                </Link>
+              )
+            )}
+          </div>
         </div>
       </nav>
-    </div>
+    </body>
   );
 }

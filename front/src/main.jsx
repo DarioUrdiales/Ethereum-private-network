@@ -4,7 +4,6 @@ import { Home } from "./components/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Faucet } from "./components/Faucet.jsx";
 import { Transfer } from "./components/Transfer";
-import "./index.css";
 import { Redes } from "./components/Redes/Redes.jsx";
 import { Explorer } from "./components/Explorer/Explorer.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -16,6 +15,7 @@ import { Root } from "./components/Root.jsx";
 import { Team } from "./components/Team";
 import { CreateNetwork } from "./components/Redes/CreateNetwork.jsx";
 import { NetworkList } from "./components/Redes/NetworkList.jsx";
+import "./index.css";
 
 const queryClient = new QueryClient();
 
@@ -29,9 +29,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/home" element={<Home />} />
             <Route path="/faucet" element={<Faucet />} />
             <Route path="/transfer" element={<Transfer />} />
+            <Route path="/team" element={<Team />} />
             <Route path="/redes" element={<Redes />}>
-              <Route index element={<NetworkList/>}/>
-              <Route path="create-network" element={<CreateNetwork/>}/>
+              <Route index element={<NetworkList />} />
+              <Route path="create-network" element={<CreateNetwork />} />
             </Route>
             <Route path="/explorer" element={<Explorer />}>
               <Route path="" element={<LatestBlocks />} />

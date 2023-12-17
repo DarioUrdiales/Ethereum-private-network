@@ -1,4 +1,61 @@
 {
+  "header": {
+    "name": "</codecrypto.academy>",
+    "links": [
+      {
+        "text": "HOME",
+        "link": "/home"
+      },
+      {
+        "text": "EQUIPO",
+        "link": "/team"
+      },
+      {
+        "text": "BLOG",
+        "link": "https://medium.com/@techieesp/seguridad-en-tu-billetera-digital-metamask-adb51f446504"
+      },
+      {
+        "text": "HELP",
+        "link": "http://youtube.com"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "link": "/faucet",
+      "imgPath": "../../img/Faucet2.png",
+      "title": "Faucet",
+      "alt": "Faucet",
+      "description": "Envía 10 ETH a tu billetera"
+    },
+    {
+      "link": "/transfer",
+      "imgPath": "../../img/Transfer2.png",
+      "title": "Transferencias",
+      "alt": "Transfer",
+      "description": "Realiza transferencias entre cuentas"
+    },
+    {
+      "link": "/redes",
+      "imgPath": "../../img/redes-eth.png",
+      "title": "Redes",
+      "alt": "Redes",
+      "description": "Crea tus propias redes en la blockchain de Ethereum"
+    },
+    {
+      "link": "/explorer",
+      "imgPath": "../../img/explorer-eth.png",
+      "title": "Explorador",
+      "alt": "Explorer",
+      "description": "Obtén información de lso bloques, transacciones y hash de las transacciones"
+    }
+  ],
+
+  "buildingText": {
+    "en": "Building Private Reds in the Ethereum Blockchain with a single click",
+    "es": "Creando Redes Privadas en la Blockchain de Ethereum con un solo click"
+  },
+
   "equipoData": [
     {
       "nombre": "Claudio Briceño",

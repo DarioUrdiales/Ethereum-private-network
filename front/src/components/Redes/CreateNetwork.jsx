@@ -14,9 +14,6 @@ export function CreateNetwork() {
   // State for storing an array of Red specifications
   const [redSpecifications, setRedSpecifications] = useState([]);
 
-  // State for controlling the display of the summary table
-  const [showSummary, setShowSummary] = useState(false);
-
   // State for tracking the index of the Red being edited
   const [editIndex, setEditIndex] = useState(null);
 
@@ -44,7 +41,7 @@ export function CreateNetwork() {
    */
   const validateNodeCount = (value) => {
     const number = parseInt(value, 10);
-    return !isNaN(number) && number > 0 && number <= 100
+    return !isNaN(number) && number <= 100
       ? null
       : "Number of Nodes must be a positive integer and no higher than 100.";
   };
@@ -130,8 +127,8 @@ export function CreateNetwork() {
   };
 
   const handleNodeCountChange = (e) => {
-    const nodeCount = parseInt(e.target.value, 10);
-    setNewRed({ ...newRed, nodeCount: isNaN(nodeCount) ? 0 : nodeCount });
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    setNewRed({ ...newRed, nodeCount: value ? parseInt(value, 10) : "" });
   };
 
   const fetchRedParameters = async () => {
@@ -158,7 +155,7 @@ export function CreateNetwork() {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/inputredparameters",
+        "http://localhost:3000/api/networks/inputredparameters",
         {
           method: "POST",
           headers: {
@@ -207,12 +204,15 @@ export function CreateNetwork() {
     setCreationMessage("");
 
     try {
-      const response = await fetch("http://localhost:3000/api/redparameters", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/networks/redparameters",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -220,8 +220,8 @@ export function CreateNetwork() {
 
       const result = await response.json();
       setCreationMessage(`Red created successfully: ${JSON.stringify(result)}`);
-      setTimeout(() => {        
-        navigate('/redes');
+      setTimeout(() => {
+        navigate("/redes");
       }, 5000);
     } catch (error) {
       console.error("Error creating Red:", error);
@@ -232,19 +232,17 @@ export function CreateNetwork() {
   };
 
   const goBack = () => {
-    navigate('/redes');
-  }
+    navigate("/redes");
+  };
 
   return (
-    <div
-      className="bg-black min-vh-100 d-flex flex-column my-5 justify-content-between"
-      style={{ background: "#FFF" }}>
+    <div className="min-vh-100 d-flex flex-column my-5 justify-content-between">
       <div className="container mt-3">
         <div className="row justify-content-center">
           <div className="col-lg-6">
-            <div className="card mb-3">
+            <div className="card mb-3 black-background">
               <div className="card-body text-center">
-                <h2 className="card-title mb-3">Manage Red</h2>
+                <h2 className="card-title mb-3">Administración de Redes</h2>
                 <div className="form-group mb-3">
                   <label htmlFor="chain-id" className="label-large">
                     Chain ID:
@@ -252,7 +250,7 @@ export function CreateNetwork() {
                   <input
                     id="chain-id"
                     type="text"
-                    className="form-control"
+                    className="form-control black-input"
                     value={newRed.chainId}
                     onChange={handleChainIdChange}
                     placeholder="Enter Chain ID"
@@ -260,35 +258,37 @@ export function CreateNetwork() {
                 </div>
                 <div className="form-group mb-3">
                   <label htmlFor="node-count" className="label-large">
-                    Number of Nodes:
+                    Número de Nodos:
                   </label>
                   <input
                     id="node-count"
                     type="number"
-                    className="form-control"
+                    className="form-control black-input"
                     min="0"
                     value={newRed.nodeCount}
                     onChange={handleNodeCountChange}
                   />
                 </div>
-                <button className="btn btn-primary mb-3" onClick={submitRed}>
-                  {editIndex !== null ? "Update Red" : "Add New Red"}
+                <button className="btn btn-secondary mb-3" onClick={submitRed}>
+                  {editIndex !== null ? "Actualizar Red" : "Agregar Nueva Red"}
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {showSummary && (
+        {redSpecifications.length > 0 && (
           <>
-            <h4 className="mt-5 text-center">Red Specifications Summary</h4>
-            <table className="table table-bordered mt-2">
+            <h4 className="mt-5 text-center white-text ">
+              Especificaciones de las Redes
+            </h4>
+            <table className="table table-bordered mt-2 white-text">
               <thead>
                 <tr>
                   <th>Red ID</th>
                   <th>Chain ID</th>
-                  <th>Node Count</th>
-                  <th>Actions</th>
+                  <th>Números de Nodos</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -301,12 +301,12 @@ export function CreateNetwork() {
                       <button
                         className="btn btn-info btn-sm me-2"
                         onClick={() => editRed(index)}>
-                        Edit
+                        Editar
                       </button>
                       <button
                         className="btn btn-danger btn-sm"
                         onClick={() => deleteRed(index)}>
-                        Delete
+                        Borrar
                       </button>
                     </td>
                   </tr>
@@ -315,27 +315,23 @@ export function CreateNetwork() {
             </table>
           </>
         )}
-
-        <button
-          className="btn btn-secondary mt-4 me-2"
-          onClick={() => setShowSummary(!showSummary)}>
-          {showSummary ? "Hide" : "Show"} Specifications
-        </button>
         <button
           className="btn btn-primary mt-4 me-2"
           onClick={submitRedParameters}>
-          Submit Red Parameters
+          Enviar los Parametros de la Red
         </button>
         <div className="d-flex justify-content-end gap-2">
           <button
-            className="btn btn-success mt-4"
+            className="btn btn-primary mt-4"
             onClick={createRed}
             disabled={creatingRed}>
-            {creatingRed ? "Creating..." : "Create Private Red"}
+            {creatingRed
+              ? "Creando..."
+              : redSpecifications.length === 1
+              ? "Crear Nueva Red Privada"
+              : "Crear Nuevas Redes Privadas"}
           </button>
-          <button
-            className="btn btn-secondary mt-4"
-            onClick={goBack}>
+          <button className="btn btn-secondary mt-4" onClick={goBack}>
             Back
           </button>
         </div>
