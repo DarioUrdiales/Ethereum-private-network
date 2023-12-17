@@ -1,13 +1,24 @@
 const express = require("express");
 const cors = require("cors");
 const { Web3 } = require("web3");
-const { getNetworksList, removeNetwork, createNetwork, addNode, addAccount, stopNetwork, startNetwork } = require("./services/networks.service");
-const fs = require("fs")
+const {
+  getNetworksList,
+  removeNetwork,
+  createNetwork,
+  addNode,
+  addAccount,
+  stopNetwork,
+  startNetwork,
+} = require("./services/networks.service");
+const fs = require("fs");
 
-
-const key_miner = JSON.parse(fs.readFileSync("../nodos/initial-blockchain/keystore/UTC--2023-12-14T12-46-05.565502610Z--c18727dab5fe77c472137437e8955d96d4db9407"))
+const key_miner = JSON.parse(
+  fs.readFileSync(
+    "../nodos/initial-blockchain/keystore/UTC--2023-12-14T12-46-05.565502610Z--c18727dab5fe77c472137437e8955d96d4db9407"
+  )
+);
 const passwd_miner = fs.readFileSync("../nodos/initial-blockchain/pwd.txt");
-console.log(passwd_miner)
+console.log(passwd_miner);
 
 const network = require("./ethers/config");
 const app = express();
@@ -49,7 +60,7 @@ app.post("/api/networks/add-node/:chainId/:nodesCount", (req, res) => {
 app.post("/api/networks/add-account/", (req, res) => {
   try {
     const { chainId, account } = req.body;
-    
+
     addAccount(chainId, account);
 
     res
@@ -112,7 +123,7 @@ app.get("/api/blocks", async (req, res) => {
       blocks.push({
         number: block.number.toString(), // Convertir a cadena
         timestamp: block.timestamp.toString(), // Convertir a cadena
-        transactions: block.transactions
+        transactions: block.transactions,
       });
     }
 
@@ -127,7 +138,11 @@ app.get("/api/blocks/:block", async (req, res) => {
   const blockNumber = req.params.block;
   try {
     const block = await web3.eth.getBlock(parseInt(blockNumber));
-    const serializedBlock = JSON.parse(JSON.stringify(block, (key, value) => typeof value === 'bigint' ? value.toString() : value));
+    const serializedBlock = JSON.parse(
+      JSON.stringify(block, (key, value) =>
+        typeof value === "bigint" ? value.toString() : value
+      )
+    );
     res.json(serializedBlock);
   } catch (error) {
     res.status(500).json(error.message);
@@ -138,7 +153,11 @@ app.get("/api/blocks/:block", async (req, res) => {
 app.get("/api/tx/:tx", async (req, res) => {
   const tx = req.params.tx;
   try {
-    const serializedTx = JSON.parse(JSON.stringify(await web3.eth.getTransaction(tx), (key, value) => typeof value === 'bigint' ? value.toString() : value));
+    const serializedTx = JSON.parse(
+      JSON.stringify(await web3.eth.getTransaction(tx), (key, value) =>
+        typeof value === "bigint" ? value.toString() : value
+      )
+    );
     res.json(serializedTx);
   } catch (error) {
     res.status(500).json(error.message);
@@ -149,8 +168,8 @@ app.get("/api/tx/:tx", async (req, res) => {
 app.get("/api/balance/:address", async (req, res) => {
   try {
     const balance = await web3.eth.getBalance(req.params.address);
-    const balanceEth = await web3.utils.fromWei(balance, 'ether'); 
-    
+    const balanceEth = await web3.utils.fromWei(balance, "ether");
+
     res.json({ balance: balanceEth.toString() }); // Convert BigInt to string
   } catch (err) {
     console.error(err);
@@ -159,7 +178,7 @@ app.get("/api/balance/:address", async (req, res) => {
 });
 
 // Route to get the current Red parameters
-app.get("/api/inputredparameters", async (req, res) => {
+app.get("/api/networks/inputredparameters", async (req, res) => {
   try {
     const updatedParameters = req.body;
     console.log("Received Red parameters:", updatedParameters);
@@ -183,7 +202,7 @@ app.get("/api/inputredparameters", async (req, res) => {
 });
 
 // Route to update the Red parameter
-app.post("/api/inputredparameters", async (req, res) => {
+app.post("/api/networks/inputredparameters", async (req, res) => {
   try {
     const updatedParameters = req.body;
     console.log("Received Red parameters:", updatedParameters);
@@ -207,7 +226,7 @@ app.post("/api/inputredparameters", async (req, res) => {
 });
 
 // Route to create a network based on parameters from 'red1' in redParameters.json
-app.post("/api/redparameters", (req, res) => {
+app.post("/api/networks/redparameters", (req, res) => {
   try {
     const redParameters = JSON.parse(
       fs.readFileSync("redParameters.json", "utf8")
@@ -232,32 +251,35 @@ app.post("/api/redparameters", (req, res) => {
   }
 });
 
-app.get("/api/faucet/:address", async(req, res) => {
+app.get("/api/faucet/:address", async (req, res) => {
   try {
-    const account = await web3.eth.accounts.decrypt(key_miner, passwd_miner)
+    const account = await web3.eth.accounts.decrypt(key_miner, passwd_miner);
 
     const gasPrice = await web3.eth.getGasPrice();
     const tx = {
       chainId: 8000,
       from: account.address,
       to: req.params.address,
-      value: web3.utils.toWei('10', 'ether'),
+      value: web3.utils.toWei("10", "ether"),
       gas: 21000,
-      gasPrice: gasPrice
+      gasPrice: gasPrice,
     };
-    const signedTx = await web3.eth.accounts.signTransaction(tx, account.privateKey);
+    const signedTx = await web3.eth.accounts.signTransaction(
+      tx,
+      account.privateKey
+    );
 
-    const receipt = await JSON.stringify(web3.eth.sendSignedTransaction(signedTx.rawTransaction) , (key, value) => {
-      return typeof value === 'bigint' ? value.toString() : value;
-  });
-   res.send(receipt)
-
+    const receipt = await JSON.stringify(
+      web3.eth.sendSignedTransaction(signedTx.rawTransaction),
+      (key, value) => {
+        return typeof value === "bigint" ? value.toString() : value;
+      }
+    );
+    res.send(receipt);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to retrieve balance" });
   }
-
-})
-
+});
 
 module.exports = app;
