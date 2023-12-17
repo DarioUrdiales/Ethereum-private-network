@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // Importing useState
 import datos from "../datos.json";
 import { Linkedin, Github } from "react-bootstrap-icons";
 
@@ -56,22 +56,30 @@ export function Team() {
   );
 
   return (
-    <div
-      className="bg-black min-vh-100 d-flex flex-column justify-content-center"
-      style={{ background: "#21252a" }}>
-      <div className="container my-5 large-text white-text">
-        <h1>¿Quienes somos?</h1>
-        <p className="my-5 medium-text white-text">
-          "Somos la suma de nuestro conocimiento, somos lo que sabemos que no
-          sabemos, somos los que colaboramos con buen rollo, somos los que
-          buscamos una mejora continua, somos los que creemos en un mundo
-          descentralizado y conectado, somos los que construimos parte de ese
-          mundo. Somos CodeCriptoAcademy."
-          {/* Rest of the quote */}
-        </p>
-        <div className="team black-text small-text">
-          <div className="row">{topRowMembers.map(renderMember)}</div>
-          <div className="row">{bottomRowMembers.map(renderMember)}</div>
+    <div>
+      <div className="d-flex justify-content-center">
+        {" "}
+        <h1 className="text-content-build mt-3 mb-5 text-white">Equipo</h1>
+      </div>
+      <div
+        className="bg-black min-vh-100 d-flex flex-column justify-content-center"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(7,7,119,1) 0%, rgba(0,0,0,1) 100%)",
+        }}>
+        <div className="container my-5 large-text white-text">
+          <h1>¿Quienes somos?</h1>
+          <p className="my-5 medium-text white-text">
+            "Somos la suma de nuestro conocimiento, somos lo que sabemos que no
+            sabemos, somos los que colaboramos con buen rollo, somos los que
+            buscamos una mejora continua, somos los que creemos en un mundo
+            descentralizado y conectado, somos los que construimos parte de ese
+            mundo. Somos codecrypto.academy."
+          </p>
+          <div className="team black-text small-text d-flex flex-column justify-content-center">
+            <div className="row">{topRowMembers.map(renderMember)}</div>
+            <div className="row">{bottomRowMembers.map(renderMember)}</div>
+          </div>
         </div>
       </div>
     </div>

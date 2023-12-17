@@ -10,14 +10,17 @@ export function Header() {
   const isExternalLink = (url) => /^https?:\/\//.test(url);
 
   return (
-    <header className="bg-dark text-white">
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <body>
+      <header />
+      <nav className="main-content navbar navbar-expand-lg ">
         <div className="container-fluid">
-          <div className="d-flex align-items-center justify-content-start medium-text">
+          <div className="d-flex align-items-center justify-content-start medium-text white-text ">
             <Logo src="./img/codecriptoacademy.png" alt="Bloques" />
-            <p className="mb-0">{datos.header.name}</p>
+            <Link to="/" className="nav-item nav-link">
+              <p className="mb-0">{datos.header.name}</p>
+            </Link>
           </div>
-          <div className="navbar-nav mx-auto medium-text">
+          <div className="navbar-nav mx-auto medium-text align-items-center">
             <Logo src="./img/eth.png" alt="Ethereum Logo" />
             <Link to="/" className="nav-item nav-link">
               Proyecto: Crear Blockchains Privadas de Ethereum
@@ -46,6 +49,6 @@ export function Header() {
           </div>
         </div>
       </nav>
-    </header>
+    </body>
   );
 }

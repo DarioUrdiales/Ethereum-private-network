@@ -20,7 +20,6 @@ export function NetworkList() {
   const [showAddNodeModal, setShowAddNodeModal] = useState(false);
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
   const [chainId, setChainId] = useState(0);
-  const navigate = useNavigate();
 
   const updateNetworkList = async () => {
     try {
@@ -113,10 +112,6 @@ export function NetworkList() {
     }
   };
 
-  const goHome = () => {
-    navigate("/home");
-  };
-
   const openAddNodeModal = (chainId) => {
     setShowAddNodeModal(true);
     setChainId(chainId);
@@ -180,7 +175,7 @@ export function NetworkList() {
     <>
       <div className="container mb-5 mt-5">
         <div className="d-flex justify-content-end align-items-center gap-2">
-          <span className="mb-2">
+          <span className="mb-2 text-white">
             {remainingTime} {remainingTime === 1 ? "second" : "seconds"} left to
             Refrescar la lista
           </span>
@@ -189,7 +184,7 @@ export function NetworkList() {
             <Link
               className="text-decoration-none text-white"
               to={"create-network"}>
-              Crear Blockchain
+              Crear Red
             </Link>
           </button>
           <button
@@ -201,10 +196,10 @@ export function NetworkList() {
         </div>
 
         <div className="border border-2 rounded p-3">
-          <h2 className="text-content-build">Listado de Redes</h2>
+          <h2 className="text-content-build text-white">Listado de Redes</h2>
           <table className="table table-striped">
             <thead>
-              <tr className="align-middle">
+              <tr className="align-middle text-white">
                 <th>Nombre</th>
                 <th>Chain id</th>
                 <th>Total de Nodos</th>
@@ -216,7 +211,7 @@ export function NetworkList() {
             <tbody>
               {networkList && networkList.length > 0 ? (
                 networkList?.map((network, index) => (
-                  <tr className="align-middle" key={index}>
+                  <tr className="align-middle text-white" key={index}>
                     <td>{network.name}</td>
                     <td>{network.chainId}</td>
                     <td>{network.nodes}</td>
@@ -263,18 +258,12 @@ export function NetworkList() {
                   </tr>
                 ))
               ) : (
-                <tr className="align-middle text-center">
+                <tr className="align-middle text-center text-white">
                   <td colSpan="6">No hay datos disponibles</td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
-
-        <div className="d-flex justify-content-end align-items-center gap-2">
-          <button className="btn btn-secondary mt-2 gap-1" onClick={goHome}>
-            Regresar
-          </button>
         </div>
       </div>
 

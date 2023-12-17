@@ -18,8 +18,8 @@ export function Tx() {
 
   return (
     <div className="border border-2 rounded p-3">
-      <h5 className="text-content-build">Transacción {tx}</h5>
-      <table className="table">
+      <h5 className="text-content-build white-text">Transacción {tx}</h5>
+      <table className="table white-text">
         <tbody>
           <tr>
             <th>Chain ID</th>
@@ -38,11 +38,11 @@ export function Tx() {
             <td>{data.hash}</td>
           </tr>
           <tr>
-            <th>Desde</th>
+            <th>Origen</th>
             <td>{data.from}</td>
           </tr>
           <tr>
-            <th>Para</th>
+            <th>Destino</th>
             <td>{data.to}</td>
           </tr>
           <tr>

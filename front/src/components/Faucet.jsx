@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 
-/**
- * CustomCard component for displaying a styled card.
- * @param {Object} props - Component props.
- * @param {string} props.title - Title to be displayed on the card.
- * @param {string} props.children - Child components to be displayed within the card.
- * @param {string} props.background - Background color of the card.
- * @param {string} props.titleColor - Color of the title text.
- */
 function CustomCard({ title, children, background, titleColor }) {
+  const cardStyle = {
+    borderRadius: "3px",
+    maxWidth: "1000px",
+    margin: "0 auto",
+    background:
+      "radial-gradient(circle, rgba(32,32,69,1) 0%, rgba(46,46,73,1) 50%, rgba(47,47,83,1) 100%)",
+    border: "1px solid black",
+    boxShadow: "0px 0px 10px rgba(0,0,0,0.5)",
+  };
+
   return (
-    <Card
-      className="mt-3"
-      style={{
-        borderRadius: "20px",
-        maxWidth: "1000px",
-        margin: "0 auto",
-        background: background || "#103D13",
-      }}>
+    <Card className="mt-3" style={cardStyle}>
       <Card.Body>
-        <Card.Title className="fs-4" style={{ color: titleColor || "#FFFFFF" }}>
-          {title}
-        </Card.Title>
+        <Card.Title className="text-light fs-5">{title}</Card.Title>
         {children}
       </Card.Body>
     </Card>
@@ -94,10 +86,16 @@ export function Faucet() {
   };
 
   useEffect(() => {
-    if (account) {
-      fetchBalance();
-    }
-  }, [account]);
+    const handleAccountsChanged = (accounts) => {
+      setAccount(accounts[0]);
+    };
+
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
+
+    return () => {
+      window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+    };
+  }, []);
 
   /**
    * Invokes the faucet to get Ethereum tokens.
@@ -138,101 +136,86 @@ export function Faucet() {
 
   return (
     <div>
-      <div className="bg-light min-vh-100 d-flex flex-column justify-content-center">
-        <div className="container d-flex justify-content-center">
-          <div className="bg-dark"></div>
-          <div className="row d-flex background-eth-faucet w-90 h-90"></div>
-          <div className="row justify-content-center w-100 h-100">
-            <div className="col-lg-8 ">
-              {error && (
-                <div
-                  className="alert alert-warning mt-3"
-                  role="alert"
-                  style={{
-                    borderRadius: "5px",
-                    backgroundColor: "#DABB9F",
-                    color: "#333",
-                    maxWidth: "1000px",
-                    margin: "0 auto",
-                  }}>
-                  {error}
-                </div>
-              )}
-
-              {/* Connect Wallet Button (Top Right) */}
-              <Button
-                onClick={connectWallet}
-                className="btn btn-primary fs-4 align-self-end mt-2 me-2">
-                Conectar Billetera
-              </Button>
-
-              {/* Custom Card components */}
-              <CustomCard
-                title={`Address: ${account || "No conectado"}`}
-                background="#FFFFFF"
-                titleColor="#000000"
-              />
-
-              <CustomCard
-                title={`Balance: ${balance} ETH`}
-                background="#FFFFFF"
-                titleColor="#000000"
-              />
-              <CustomCard
-                title="Recibe faucet ERC20 a tu billetera"
-                style={{
-                  color: "#FFFFFF",
-                }}>
-                <div className="d-grid gap-2 mt-10 fs-4">
-                  <Button
-                    onClick={invokeFaucet}
-                    className="btn btn-success mt-4 fs-4"
-                    disabled={loadingInvokeFaucet} // Deshabilitar el botón mientras se está cargando
-                  >
-                    {loadingInvokeFaucet ? (
-                      <div>
-                        <Spinner animation="grow" role="status">
-                          <span className="visually-hidden">
-                            Realizando transacción, espere por favor
-                          </span>
-                        </Spinner>
-                        <span className="p-3">
-                          Realizando transacción, espere por favor
-                        </span>
-                      </div>
-                    ) : (
-                      "Obtener token faucet!"
-                    )}
-                  </Button>
-                </div>
-              </CustomCard>
-              {/* Go Home Button */}
-              {divTxOK && (
-                <div
-                  className="alert alert-success mt-3 border border-success"
-                  role="alert">
-                  <h5 className="alert-heading">
-                    <b>Transacción realizada correctamente</b>
-                  </h5>
-                  <div>
-                    Espera unos minutos antes de realizar una nueva transacción
-                  </div>
-                </div>
-              )}
-              <div className="mt-4">
-                <Link
-                  to="/"
-                  className="btn btn-dark fs-4"
-                  style={{
-                    borderRadius: "5px",
-                    maxWidth: "1000px",
-                    margin: "3 auto",
-                  }}>
-                  Ir a Pagina Principal
-                </Link>
-              </div>
+      <div className="d-flex justify-content-center">
+        {" "}
+        {/* Flex container */}
+        <h1 className="text-content-build mt-3 mb-0 text-white">Faucet</h1>
+      </div>
+      <div
+        className="d-flex align-items-center justify-content-center"
+        style={{
+          height: "52vh",
+          background:
+            "radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(7,7,119,1) 0%, rgba(0,0,0,1) 100%)",
+        }}>
+        <div
+          className="w-50 p-3"
+          style={{
+            background: "#090730",
+            borderRadius: "3px",
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.5)",
+          }}>
+          {error && (
+            <div
+              className="alert alert-warning"
+              role="alert"
+              style={{
+                borderRadius: "10px",
+                background: "#DABB9F",
+                color: "#333",
+              }}>
+              {error}
             </div>
-          </div>
+          )}
+
+          {/* Connect Wallet Button */}
+          <Button onClick={connectWallet} className="btn btn-light fs-5 my-2">
+            Conectar Billetera
+          </Button>
+
+          {/* Custom Card components */}
+          <CustomCard
+            title={`Address: ${account || "Billetera no conectada"}`}
+            background="#FFFFFF"
+            titleColor="#000000"
+          />
+          <CustomCard
+            title={`Balance: ${balance} ETH`}
+            background="#FFFFFF"
+            titleColor="#000000"
+          />
+          <CustomCard title="Recibe faucet ERC20 a tu billetera">
+            <Button
+              onClick={invokeFaucet}
+              className="btn btn-primary fs-5 mt-3"
+              disabled={loadingInvokeFaucet}>
+              {loadingInvokeFaucet ? (
+                <>
+                  <Spinner animation="border" role="status" size="sm" />
+                  <span className="ms-2">
+                    Realizando transacción, espere por favor
+                  </span>
+                </>
+              ) : (
+                "Obtener token faucet!"
+              )}
+            </Button>
+          </CustomCard>
+
+          {/* Transaction Success Message */}
+          {divTxOK && (
+            <div
+              className="alert alert-success mt-3"
+              role="alert"
+              style={{
+                borderRadius: "10px",
+                background: "#153613",
+                color: "#fff",
+              }}>
+              <h5 className="fs-5">Transacción realizada correctamente</h5>
+              <p>Espera unos minutos antes de realizar una nueva transacción</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

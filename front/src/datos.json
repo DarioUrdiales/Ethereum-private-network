@@ -3,6 +3,10 @@
     "name": "</codecrypto.academy>",
     "links": [
       {
+        "text": "HOME",
+        "link": "/home"
+      },
+      {
         "text": "EQUIPO",
         "link": "/team"
       },
