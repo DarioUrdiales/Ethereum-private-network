@@ -64,10 +64,15 @@ export function CreateNetwork() {
   };
 
   const validateAddress = (value) => {
-    const isValidEthereumAddress = /^0x[a-fA-F0-9]{40}$/.test(value);
+    const addressToValidate =
+      value === "" ? "0x0000000000000000000000000000000000000000" : value;
+
+    const isValidEthereumAddress = /^0x[a-fA-F0-9]{40}$/.test(
+      addressToValidate
+    );
     return isValidEthereumAddress
       ? null
-      : "Por favor ingrese una billetera de Ethereum valida";
+      : "Por favor ingrese una dirección de billetera Ethereum válida.";
   };
 
   /**
