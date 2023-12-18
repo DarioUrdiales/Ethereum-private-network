@@ -20,6 +20,10 @@ export function CreateNetwork() {
   // States for managing the creation process of a Red
   const [creatingRed, setCreatingRed] = useState(false);
   const [creationMessage, setCreationMessage] = useState("");
+  const [isCreationSuccessful, setIsCreationSuccessful] = useState(false);
+
+  // State for tracking the key of the Red specifications list
+  const [isSentSuccessfully, setIsSentSuccessfully] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,6 +36,7 @@ export function CreateNetwork() {
     redId: "",
     chainId: "",
     nodeCount: "",
+    address: "",
   });
 
   /**
@@ -43,7 +48,7 @@ export function CreateNetwork() {
     const number = parseInt(value, 10);
     return !isNaN(number) && number <= 100
       ? null
-      : "Number of Nodes must be a positive integer and no higher than 100.";
+      : "El número de nodos debe ser un entero positivo y no mayor de 100.";
   };
 
   /**
@@ -55,7 +60,14 @@ export function CreateNetwork() {
     const number = parseInt(value, 10);
     return !isNaN(number) && number > 1
       ? null
-      : "Chain ID must be a positive integer different from 1.";
+      : "El ID de la cadena debe ser un número entero positivo diferente de 1.";
+  };
+
+  const validateAddress = (value) => {
+    const isValidEthereumAddress = /^0x[a-fA-F0-9]{40}$/.test(value);
+    return isValidEthereumAddress
+      ? null
+      : "Por favor ingrese una billetera de Ethereum valida";
   };
 
   /**
@@ -66,13 +78,14 @@ export function CreateNetwork() {
     // Validation
     const nodeCountError = validateNodeCount(newRed.nodeCount);
     const chainIdError = validateChainId(newRed.chainId);
+    const addressError = validateAddress(newRed.address);
 
     // Alert and return if there's an error
-    if (nodeCountError || chainIdError) {
+    if (nodeCountError || chainIdError || addressError) {
       alert(
-        `Invalid input. ${nodeCountError || ""} ${
-          chainIdError || ""
-        } Please check your data.`
+        `Input no valido. ${nodeCountError || ""} ${chainIdError || ""}   ${
+          addressError || ""
+        }`
       );
       return;
     }
@@ -82,7 +95,9 @@ export function CreateNetwork() {
       (red) => red.chainId.toString() === newRed.chainId
     );
     if (isDuplicateChainId) {
-      alert("The Chain ID already exists. Please enter a different Chain ID.");
+      alert(
+        "El ID de la cadena ya existe. Por favor, introduzca un ID de cadena diferente."
+      );
       return;
     }
 
@@ -95,6 +110,7 @@ export function CreateNetwork() {
           : `red${redSpecifications.length + 1}`,
       chainId: parseInt(newRed.chainId, 10),
       nodeCount: parseInt(newRed.nodeCount, 10),
+      address: newRed.address,
     };
     const updatedReds =
       editIndex !== null
@@ -104,7 +120,7 @@ export function CreateNetwork() {
         : [...redSpecifications, newRedData];
 
     setRedSpecifications(updatedReds);
-    setNewRed({ chainId: "", nodeCount: 0 });
+    setNewRed({ chainId: "", nodeCount: 0, address: "" });
     setEditIndex(null);
   };
 
@@ -131,14 +147,18 @@ export function CreateNetwork() {
     setNewRed({ ...newRed, nodeCount: value ? parseInt(value, 10) : "" });
   };
 
+  const handleAddressChange = (e) => {
+    setNewRed({ ...newRed, address: e.target.value });
+  };
+
   const fetchRedParameters = async () => {
-    fetch("http://localhost:3000/api/inputredparameters")
+    fetch("http://localhost:3000/api/networks/inputredparameters")
       .then((response) => response.json())
       .then((data) => {
         setVariables(data);
       })
       .catch((error) => {
-        console.error("Error fetching Red parameters:", error);
+        console.error("Error al obtener los parámetros de la Red:", error);
       });
   };
 
@@ -151,7 +171,7 @@ export function CreateNetwork() {
       variables,
       reds: redSpecifications,
     };
-    console.log("Sending JSON to backend:", requestData);
+    console.log("Enviando JSON al servidor:", requestData);
 
     try {
       const response = await fetch(
@@ -171,13 +191,15 @@ export function CreateNetwork() {
 
       // Check for successful response
       if (response.status >= 200 && response.status < 300) {
-        console.log("Red parameters updated successfully");
+        console.log("Parámetros de la Red actualizados con éxito");
+        setIsSentSuccessfully(true);
       } else {
         const text = await response.text();
-        throw new Error(`Unexpected response: ${text}`);
+        throw new Error(`Respuesta inesperada: ${text}`);
       }
     } catch (error) {
-      console.error("Error updating Red parameters:", error);
+      console.error("Error al actualizar los parámetros de la Red:", error);
+      setIsSentSuccessfully(false);
     }
   };
 
@@ -187,7 +209,7 @@ export function CreateNetwork() {
    */
   const submitRedParameters = () => {
     const confirmation = window.confirm(
-      "Are you sure you want to submit the current red(s) specifications?"
+      "¿Está seguro de que desea enviar las especificaciones actuales de la(s) red(es)?"
     );
 
     if (confirmation) {
@@ -220,12 +242,14 @@ export function CreateNetwork() {
 
       const result = await response.json();
       setCreationMessage(`Red created successfully: ${JSON.stringify(result)}`);
+      setIsCreationSuccessful(true);
       setTimeout(() => {
         navigate("/redes");
       }, 5000);
     } catch (error) {
       console.error("Error creating Red:", error);
       setCreationMessage(`Error creating Red: ${error.message}`);
+      setIsCreationSuccessful(false);
     } finally {
       setCreatingRed(false);
     }
@@ -253,7 +277,7 @@ export function CreateNetwork() {
                     className="form-control black-input"
                     value={newRed.chainId}
                     onChange={handleChainIdChange}
-                    placeholder="Enter Chain ID"
+                    placeholder="Identificador de la Red"
                   />
                 </div>
                 <div className="form-group mb-3">
@@ -267,6 +291,19 @@ export function CreateNetwork() {
                     min="0"
                     value={newRed.nodeCount}
                     onChange={handleNodeCountChange}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="node-count" className="label-large">
+                    Ingrese la dirección de su billetera Ethereum:
+                  </label>
+                  <input
+                    id="address"
+                    type="text"
+                    className="form-control black-input"
+                    value={newRed.address}
+                    onChange={handleAddressChange}
+                    placeholder="Billetera Ethereum para asociarla con la configuración de la Red"
                   />
                 </div>
                 <button className="btn btn-secondary mb-3" onClick={submitRed}>
@@ -288,6 +325,7 @@ export function CreateNetwork() {
                   <th>Red ID</th>
                   <th>Chain ID</th>
                   <th>Números de Nodos</th>
+                  <th>Cuenta de Billetera en Red de Ethereum</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -297,6 +335,7 @@ export function CreateNetwork() {
                     <td>{red.redId}</td>
                     <td>{red.chainId}</td>
                     <td>{red.nodeCount}</td>
+                    <td>{red.address}</td>
                     <td>
                       <button
                         className="btn btn-info btn-sm me-2"
@@ -316,13 +355,17 @@ export function CreateNetwork() {
           </>
         )}
         <button
-          className="btn btn-primary mt-4 me-2"
+          className={`btn ${
+            isSentSuccessfully ? "btn-success" : "btn-primary"
+          } mt-4 me-2`}
           onClick={submitRedParameters}>
-          Enviar los Parametros de la Red
+          Enviar los Parametros
         </button>
         <div className="d-flex justify-content-end gap-2">
           <button
-            className="btn btn-primary mt-4"
+            className={`btn ${
+              isCreationSuccessful ? "btn-success" : "btn-primary"
+            } mt-4`}
             onClick={createRed}
             disabled={creatingRed}>
             {creatingRed
