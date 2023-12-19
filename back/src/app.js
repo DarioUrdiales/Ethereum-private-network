@@ -9,6 +9,7 @@ const {
   addAccount,
   stopNetwork,
   startNetwork,
+  dbData,
 } = require("./services/networks.service");
 const fs = require("fs");
 
@@ -204,20 +205,10 @@ app.get("/api/networks/inputredparameters", async (req, res) => {
 // Route to update the Red parameter
 app.post("/api/networks/inputredparameters", async (req, res) => {
   try {
-    const updatedParameters = req.body;
-    console.log("Received Red parameters:", updatedParameters);
-
-    // Write JSON string to a file
-    fs.writeFile(
-      "redParameters.json",
-      JSON.stringify(req.body, null, 2),
-      (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send(err);
-        }
-        res.send({ message: "JSON received and stored." });
-      }
+    dbData(
+      req.body,
+      (successMessage) => res.send(successMessage),
+      (err) => res.status(500).send(err)
     );
   } catch (error) {
     console.error(error.message);
