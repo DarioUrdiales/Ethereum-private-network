@@ -2,48 +2,30 @@ import { useState, useEffect } from "react";
 import "../../index.css";
 import { useNavigate } from "react-router-dom";
 
-/**
- * Component for managing Red specifications.
- * Allows users to add, edit, delete, and submit Red specifications.
- * It also enables creating a Red by making an API call.
- */
 export function CreateNetwork() {
-  // State for storing the current input values
-  const [newRed, setNewRed] = useState({ chainId: "", nodeCount: 0 });
-
-  // State for storing an array of Red specifications
+  const [newRed, setNewRed] = useState({
+    chainId: "",
+    nodeCount: 0,
+    account: "",
+  });
   const [redSpecifications, setRedSpecifications] = useState([]);
-
-  // State for tracking the index of the Red being edited
   const [editIndex, setEditIndex] = useState(null);
-
-  // States for managing the creation process of a Red
   const [creatingRed, setCreatingRed] = useState(false);
   const [creationMessage, setCreationMessage] = useState("");
   const [isCreationSuccessful, setIsCreationSuccessful] = useState(false);
-
-  // State for tracking the key of the Red specifications list
   const [isSentSuccessfully, setIsSentSuccessfully] = useState(false);
-
-  const navigate = useNavigate();
-
-  // Fetch Red parameters on component mount
-  useEffect(() => {
-    fetchRedParameters();
-  }, []);
-
   const [variables, setVariables] = useState({
     redId: "",
     chainId: "",
     nodeCount: "",
     address: "",
   });
+  const navigate = useNavigate();
 
-  /**
-   * Validates the node count input.
-   * @param {string} value - The node count value to validate.
-   * @returns {string|null} - An error message if invalid, otherwise null.
-   */
+  useEffect(() => {
+    fetchRedParameters();
+  }, []);
+
   const validateNodeCount = (value) => {
     const number = parseInt(value, 10);
     return !isNaN(number) && number <= 100
@@ -51,11 +33,6 @@ export function CreateNetwork() {
       : "El número de nodos debe ser un entero positivo y no mayor de 100.";
   };
 
-  /**
-   * Validates the chain ID input.
-   * @param {string} value - The chain ID value to validate.
-   * @returns {string|null} - An error message if invalid, otherwise null.
-   */
   const validateChainId = (value) => {
     const number = parseInt(value, 10);
     return !isNaN(number) && number > 1
@@ -63,37 +40,31 @@ export function CreateNetwork() {
       : "El ID de la cadena debe ser un número entero positivo diferente de 1.";
   };
 
-  const validateAddress = (value) => {
+  const validateAccount = (value) => {
     if (!value || value.trim() === "") {
       return "";
     }
     const isValidEthereumAccount = /^0x[a-fA-F0-9]{40}$/.test(value);
     return isValidEthereumAccount
-      ? null
+      ? ""
       : "Por favor ingrese una dirección de billetera Ethereum válida.";
   };
 
-  /**
-   * Handles submission of a new or edited Red.
-   * Validates input, checks for duplicate chain IDs, and updates the state.
-   */
   const submitRed = () => {
-    // Validation
     const nodeCountError = validateNodeCount(newRed.nodeCount);
     const chainIdError = validateChainId(newRed.chainId);
-    const addressError = validateAddress(newRed.address);
+    const accountError = validateAccount(newRed.account);
 
-    // Alert and return if there's an error
-    if (nodeCountError || chainIdError || addressError) {
-      alert(
-        `Input no valido. ${nodeCountError || ""} ${chainIdError || ""}   ${
-          addressError || ""
-        }`
-      );
-      return;
+    let errorMessage = "";
+    if (nodeCountError) errorMessage += nodeCountError + " ";
+    if (chainIdError) errorMessage += chainIdError + " ";
+    if (accountError) errorMessage += accountError;
+
+    if (errorMessage) {
+      alert(`Input no valido. ${errorMessage.trim()}`);
+      return false;
     }
 
-    // Check for duplicate Chain ID
     const isDuplicateChainId = redSpecifications.some(
       (red) => red.chainId.toString() === newRed.chainId
     );
@@ -101,10 +72,9 @@ export function CreateNetwork() {
       alert(
         "El ID de la cadena ya existe. Por favor, introduzca un ID de cadena diferente."
       );
-      return;
+      return false;
     }
 
-    // Update Red specifications list
     const newRedData = {
       ...newRed,
       redId:
@@ -113,8 +83,9 @@ export function CreateNetwork() {
           : `red${redSpecifications.length + 1}`,
       chainId: parseInt(newRed.chainId, 10),
       nodeCount: parseInt(newRed.nodeCount, 10),
-      address: newRed.address,
+      account: newRed.account,
     };
+
     const updatedReds =
       editIndex !== null
         ? redSpecifications.map((red, index) =>
@@ -123,8 +94,9 @@ export function CreateNetwork() {
         : [...redSpecifications, newRedData];
 
     setRedSpecifications(updatedReds);
-    setNewRed({ chainId: "", nodeCount: 0, address: "" });
+    setNewRed({ chainId: "", nodeCount: 0, account: "" });
     setEditIndex(null);
+    return true;
   };
 
   const editRed = (index) => {
@@ -150,8 +122,27 @@ export function CreateNetwork() {
     setNewRed({ ...newRed, nodeCount: value ? parseInt(value, 10) : "" });
   };
 
-  const handleAddressChange = (e) => {
-    setNewRed({ ...newRed, address: e.target.value });
+  const handleAccountChange = (e) => {
+    setNewRed({ ...newRed, account: e.target.value });
+  };
+
+  const handleAddNetwork = () => {
+    const isValid = submitRed();
+    if (!isValid) {
+      return;
+    }
+
+    const newRedData = {
+      ...newRed,
+      redId: `red${redSpecifications.length + 1}`,
+      chainId: parseInt(newRed.chainId, 10),
+      nodeCount: parseInt(newRed.nodeCount, 10),
+      account: newRed.account,
+    };
+    const updatedReds = [...redSpecifications, newRedData];
+
+    // Send the updated redSpecifications to the backend
+    updateVariables(updatedReds);
   };
 
   const fetchRedParameters = async () => {
@@ -207,20 +198,6 @@ export function CreateNetwork() {
   };
 
   /**
-   * Handles the submission of the current Red specifications.
-   * It asks for confirmation before proceeding with the update.
-   */
-  const submitRedParameters = () => {
-    // const confirmation = window.confirm(
-    //   "¿Está seguro de que desea enviar las especificaciones actuales de la(s) red(es)?"
-    // );
-
-    // if (confirmation) {
-    updateVariables();
-    // }
-  };
-
-  /**
    * Creates a new Red by sending a POST request to the backend.
    * It sets the state to reflect the creation process and updates the user upon completion.
    */
@@ -250,8 +227,10 @@ export function CreateNetwork() {
         navigate("/redes");
       }, 5000);
     } catch (error) {
-      console.error("Error creating Red:", error);
-      setCreationMessage(`Error creating Red: ${error.message}`);
+      console.error("Error creating Red, please check input:", error);
+      setCreationMessage(
+        `Error creating Red, please check input: ${error.message}`
+      );
       setIsCreationSuccessful(false);
     } finally {
       setCreatingRed(false);
@@ -301,15 +280,19 @@ export function CreateNetwork() {
                     Ingrese la dirección de su billetera Ethereum:
                   </label>
                   <input
-                    id="address"
+                    id="account"
                     type="text"
                     className="form-control black-input"
-                    value={newRed.address}
-                    onChange={handleAddressChange}
+                    value={newRed.account}
+                    onChange={handleAccountChange}
                     placeholder="Billetera Ethereum para asociarla con la configuración de la Red"
                   />
                 </div>
-                <button className="btn btn-secondary mb-3" onClick={submitRed}>
+                <button
+                  className={`btn ${
+                    isSentSuccessfully ? "btn-success" : "btn-primary"
+                  } mt-4 me-2`}
+                  onClick={handleAddNetwork}>
                   {editIndex !== null ? "Actualizar Red" : "Agregar Nueva Red"}
                 </button>
               </div>
@@ -338,7 +321,7 @@ export function CreateNetwork() {
                     <td>{red.redId}</td>
                     <td>{red.chainId}</td>
                     <td>{red.nodeCount}</td>
-                    <td>{red.address}</td>
+                    <td>{red.account}</td>
                     <td>
                       <button
                         className="btn btn-info btn-sm me-2"
@@ -357,13 +340,6 @@ export function CreateNetwork() {
             </table>
           </>
         )}
-        <button
-          className={`btn ${
-            isSentSuccessfully ? "btn-success" : "btn-primary"
-          } mt-4 me-2`}
-          onClick={submitRedParameters}>
-          Enviar los Parametros
-        </button>
         <div className="d-flex justify-content-end gap-2">
           <button
             className={`btn ${
@@ -378,7 +354,7 @@ export function CreateNetwork() {
               : "Crear Nuevas Redes Privadas"}
           </button>
           <button className="btn btn-secondary mt-4" onClick={goBack}>
-            Back
+            Ir a Listado de Redes
           </button>
         </div>
         {creationMessage && (
