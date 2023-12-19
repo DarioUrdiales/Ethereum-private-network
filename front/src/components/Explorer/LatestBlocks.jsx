@@ -21,7 +21,7 @@ export function LatestBlocks() {
   return (
     <>
       <h2 className="text-content-build white-text">Últimos bloques</h2>
-      <table className="table table-striped white-text">
+      <table className="table text-white">
         <thead>
           <tr>
             <th>Número de bloque</th>
@@ -29,11 +29,11 @@ export function LatestBlocks() {
             <th>Antigüedad</th>
           </tr>
         </thead>
-        <tbody>
+      <tbody>
           {data.map((block, i) => (
             <tr key={i}>
               <td>
-                <Link to={`/explorer/block/${block.number}`}>
+                <Link className='link-info' to={`/explorer/block/${block.number}`}>
                   {block.number}
                 </Link>
               </td>
@@ -47,6 +47,7 @@ export function LatestBlocks() {
           ))}
         </tbody>
       </table>
+
     </>
   );
 }

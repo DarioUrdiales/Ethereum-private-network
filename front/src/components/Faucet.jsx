@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 function CustomCard({ title, children, background, titleColor }) {
   const cardStyle = {
@@ -74,6 +75,7 @@ export function Faucet() {
         });
         setAccount(accounts[0]);
         setError(null);
+        await fetchBalance();
       } catch (error) {
         setError("Error al conectar la billetera.");
         console.error(error);
@@ -204,17 +206,40 @@ export function Faucet() {
 
           {/* Transaction Success Message */}
           {divTxOK && (
-            <div
-              className="alert alert-success mt-3"
-              role="alert"
-              style={{
-                borderRadius: "10px",
-                background: "#153613",
-                color: "#fff",
-              }}>
-              <h5 className="fs-5">Transacción realizada correctamente</h5>
-              <p>Espera unos minutos antes de realizar una nueva transacción</p>
-            </div>
+            <ToastContainer
+              className="p-3"
+              style={{ zIndex: 1, width: '1300px', position: 'fixed', bottom: 0, left: 0 }}
+            >
+              <Toast
+                onClose={() => setDivTxOK(false)}
+                show={setDivTxOK}
+                delay={3000}
+                autohide>
+                <Toast.Body className="bg-success text-white">
+                  <h5 className="fs-5">Transacción realizada correctamente</h5>
+                  <p>Espera unos minutos antes de realizar una nueva transacción</p>
+                </Toast.Body>
+              </Toast>
+            </ToastContainer>
+          )}
+          {/* Transaction Error Message */}
+          {error && (
+            <ToastContainer
+              className="p-3"
+              style={{ zIndex: 1, width: '300px', position: 'fixed', bottom: 0, left: 0 }}
+            >
+              <Toast
+                onClose={() => setError(null)}
+                show={error !== null}
+                delay={3000}
+                autohide
+              >
+                <Toast.Body className="bg-danger text-white">
+                  <h5 className="fs-5">Error en la transacción</h5>
+                  <p>{error}</p>
+                </Toast.Body>
+              </Toast>
+            </ToastContainer>
           )}
         </div>
       </div>

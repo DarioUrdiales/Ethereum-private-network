@@ -1,25 +1,114 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Alert } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Web3} from 'web3'
+
+
 
 export function Explorer() {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
-  const submitForm = (data) => {
-    //Transaccion
-    if (data.data.length === 66) navigate(`/explorer/tx/${data.data}`);
+  const { register, handleSubmit, reset } = useForm();
+  const [showAlert, setShowAlert] = useState(false);
+  const web3 = new Web3("http://localhost:8670");
 
-    //balance
-    if (data.data.length === 42) navigate(`/explorer/address/${data.data}`);
+  
+  useEffect(() => {
+    // Restablece el formulario cuando cambia la URL
+    reset();
+    setShowAlert(false);
+  }, [location.pathname]);
 
-    //bloque
-    if (/^\d+\.?\d*$/.test(data.data)) navigate(`/explorer/block/${data.data}`);
+  const checkExistence = async (data) => {
+    try {
+      // Validación
+      if (!data) {
+        setShowAlert(true);
+        return false;
+      }
+
+      // Bloque
+      if (/^\d+\.?\d*$/.test(data)) {
+        const blockNumber = parseInt(data, 10);
+        const block = await web3.eth.getBlock(blockNumber);
+        return !!block;
+      }
+
+      // Balance
+      else if (data.length === 42) {
+        const accounts = await web3.eth.getAccounts();
+        const balance = await web3.eth.getBalance(data);
+        return accounts.includes(data) && balance !== '0';
+      }
+
+      // Transaccion
+      else if (data.length === 66) {
+        const transaction = await web3.eth.getTransaction(data);
+        return !!transaction;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error al verificar la existencia:', error);
+      return false;
+    }
   };
+
+  const submitForm = async (data) => {
+    // Validación de datos
+    if (!data.data) {
+      setShowAlert(true);
+      return;
+    }
+  
+    try {
+      // Transaccion
+      if (data.data.length === 66) {
+        const transaccionExiste = await checkExistence(data.data);
+        console.log(transaccionExiste);
+        if (transaccionExiste) {
+          navigate(`/explorer/tx/${data.data}`);
+          setShowAlert(false);
+        } else {
+          setShowAlert(true);
+        }
+      }
+      // Balance
+      else if (data.data.length === 42) {
+        const balanceExiste = await checkExistence(data.data);
+        console.log(balanceExiste);
+        if (balanceExiste) {
+          navigate(`/explorer/address/${data.data}`);
+          setShowAlert(false);
+        } else {
+          setShowAlert(true);
+        }
+      }
+      // Bloque
+      else if (/^\d+\.?\d*$/.test(data.data)) {
+        const bloqueExiste = await checkExistence(data.data);
+        console.log(bloqueExiste);
+        if (bloqueExiste) {
+          navigate(`/explorer/block/${data.data}`);
+          setShowAlert(false);
+        } else {
+          setShowAlert(true);
+        }
+      } else {
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error('Error al procesar la solicitud:', error);
+      setShowAlert(true);
+    }
+  };
+
 
   return (
     <div>
       <div className="d-flex justify-content-center">
         {" "}
-        <h1 className="text-content-build mt-3 mb-5 text-white">Explorer</h1>
+        <Link className='no-underline link-light d-flex justify-content-center align-items-center text-content-build m-3' to={`/explorer`}><h1 className="text-white">Explorer</h1></Link>
       </div>
       <div className="container white-text">
         <form
@@ -43,6 +132,11 @@ export function Explorer() {
             </svg>
           </button>
         </form>
+        {showAlert && (
+          <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+            Por favor, ingrese una transacción, balance o cuenta correctos.
+          </Alert>
+        )}
         <div className="border border-2 rounded p-3 mb-5 white-text">
           <Outlet></Outlet>
         </div>

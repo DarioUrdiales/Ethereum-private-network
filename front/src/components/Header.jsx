@@ -10,9 +10,7 @@ export function Header() {
   const isExternalLink = (url) => /^https?:\/\//.test(url);
 
   return (
-    <body>
-      <header />
-      <nav className="main-content navbar navbar-expand-lg ">
+      <nav className="navbar navbar-expand-lg border border-dark navbar-height">
         <div className="container-fluid">
           <div className="d-flex align-items-center justify-content-start medium-text white-text ">
             <Logo src="./img/codecriptoacademy.png" alt="Bloques" />
@@ -49,6 +47,5 @@ export function Header() {
           </div>
         </div>
       </nav>
-    </body>
   );
 }
