@@ -16,7 +16,7 @@ export function Footer() {
         {" "}
         {/* Changed from container-fluid to container for padding */}
         <div className="row justify-content-between align-items-center my-2">
-          <div className="col-lg-3 col-md-4 d-flex align-items-center">
+          <div className="col-lg-3 col-md-3 d-flex align-items-center">
             <Logo src="./img/codecriptoacademy.png" alt="Bloques" />
             <p className="mb-0">{datos.header.name}</p>
           </div>
@@ -32,7 +32,7 @@ export function Footer() {
         <div className="row">
           {/* Address Section */}
           <div className="col-md-3">
-            <h5>DIRECCIÓN</h5>
+            <h6>DIRECCIÓN</h6>
             <p>
               Madrid, ESP <br />
               Código Postal: 28021 <br />
@@ -42,8 +42,10 @@ export function Footer() {
 
           {/* Helpful Links Section */}
           <div className="col-md-3">
-            <h5>ENLACES ÚTILES</h5>
-            <Link to="/privacy" className="d-block text-white">
+            <h6>ENLACES ÚTILES</h6>
+            <Link
+              to="https://codecrypto.academy/politica-de-privacidad/"
+              className="d-block text-white">
               Política de Privacidad
             </Link>
           </div>
@@ -51,7 +53,7 @@ export function Footer() {
           {/* Contact Section */}
           <div className="col-md-3">
             <div className="contact-section">
-              <h5>CONTACTANOS</h5>
+              <h6>CONTACTANOS</h6>
               <a href="mailto:codecrypto@codecrypto.com" className="text-white">
                 codecrypto@codecrypto.com
               </a>
@@ -81,7 +83,7 @@ export function Footer() {
 
           {/* Newsletter Section */}
           <div className="col-md-3">
-            <h5>PODCASTS</h5>
+            <h6>PODCASTS</h6>
             <p>Subscríbete a nuestro Podcast</p>
             <input
               type="email"

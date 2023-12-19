@@ -147,8 +147,8 @@ export function Faucet() {
         className="d-flex align-items-center justify-content-center"
         style={{
           height: "52vh",
-          background:
-            "radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(7,7,119,1) 0%, rgba(0,0,0,1) 100%)",
+          // background:
+          //   "radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(7,7,119,1) 0%, rgba(0,0,0,1) 100%)",
         }}>
         <div
           className="w-50 p-3"
@@ -208,8 +208,13 @@ export function Faucet() {
           {divTxOK && (
             <ToastContainer
               className="p-3"
-              style={{ zIndex: 1, width: '1300px', position: 'fixed', bottom: 0, left: 0 }}
-            >
+              style={{
+                zIndex: 1,
+                width: "1300px",
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+              }}>
               <Toast
                 onClose={() => setDivTxOK(false)}
                 show={setDivTxOK}
@@ -217,7 +222,9 @@ export function Faucet() {
                 autohide>
                 <Toast.Body className="bg-success text-white">
                   <h5 className="fs-5">Transacción realizada correctamente</h5>
-                  <p>Espera unos minutos antes de realizar una nueva transacción</p>
+                  <p>
+                    Espera unos minutos antes de realizar una nueva transacción
+                  </p>
                 </Toast.Body>
               </Toast>
             </ToastContainer>
@@ -226,14 +233,18 @@ export function Faucet() {
           {error && (
             <ToastContainer
               className="p-3"
-              style={{ zIndex: 1, width: '300px', position: 'fixed', bottom: 0, left: 0 }}
-            >
+              style={{
+                zIndex: 1,
+                width: "300px",
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+              }}>
               <Toast
                 onClose={() => setError(null)}
                 show={error !== null}
                 delay={3000}
-                autohide
-              >
+                autohide>
                 <Toast.Body className="bg-danger text-white">
                   <h5 className="fs-5">Error en la transacción</h5>
                   <p>{error}</p>

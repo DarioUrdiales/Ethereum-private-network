@@ -64,13 +64,11 @@ export function CreateNetwork() {
   };
 
   const validateAddress = (value) => {
-    const addressToValidate =
-      value === "" ? "0x0000000000000000000000000000000000000000" : value;
-
-    const isValidEthereumAddress = /^0x[a-fA-F0-9]{40}$/.test(
-      addressToValidate
-    );
-    return isValidEthereumAddress
+    if (!value || value.trim() === "") {
+      return "";
+    }
+    const isValidEthereumAccount = /^0x[a-fA-F0-9]{40}$/.test(value);
+    return isValidEthereumAccount
       ? null
       : "Por favor ingrese una dirección de billetera Ethereum válida.";
   };
@@ -213,13 +211,13 @@ export function CreateNetwork() {
    * It asks for confirmation before proceeding with the update.
    */
   const submitRedParameters = () => {
-    const confirmation = window.confirm(
-      "¿Está seguro de que desea enviar las especificaciones actuales de la(s) red(es)?"
-    );
+    // const confirmation = window.confirm(
+    //   "¿Está seguro de que desea enviar las especificaciones actuales de la(s) red(es)?"
+    // );
 
-    if (confirmation) {
-      updateVariables();
-    }
+    // if (confirmation) {
+    updateVariables();
+    // }
   };
 
   /**
