@@ -14,12 +14,12 @@ export function Block() {
   );
 
   if (isLoading)
-    return <h2 className="text-content-build white-tex">Loading...</h2>;
+    return <h2 className="text-content-build white-text">Loading...</h2>;
   if (isError) return <h2>{error.toString()}</h2>;
 
   return (
-    <div className="border border-2 rounded p-3 white-tex">
-      <h2 className="text-content-build white-text">Bloque #{block}</h2>
+    <div className="border border-2 rounded p-3 white-text">
+      <h2 className="text-content-build">Bloque #{block}</h2>
       <table className="table white-text">
         <tbody>
           <tr>

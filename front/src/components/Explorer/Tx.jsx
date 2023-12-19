@@ -1,7 +1,6 @@
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import { Web3 } from "web3";
-const web3 = new Web3("http://localhost:8670");
 
 export function Tx() {
   const { tx } = useParams();
@@ -18,7 +17,7 @@ export function Tx() {
 
   return (
     <div className="border border-2 rounded p-3">
-      <h5 className="text-content-build white-text">Transacción {tx}</h5>
+      <h5 className="text-content-build">Transacción {tx}</h5>
       <table className="table white-text">
         <tbody>
           <tr>

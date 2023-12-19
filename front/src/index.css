@@ -18,9 +18,17 @@
 .full-height {
   height: 100vh;
 }
-.content-container {
-  margin-top: 62px;
+
+.margin-redes {
+  margin-top: 100px;
+  margin-bottom: 30px;
 }
+
+.navbar-height{
+  width: 100%;
+  height: 600px;
+}
+
 .div-cent-izda {
   position: absolute;
   top: 50%;
@@ -162,6 +170,7 @@ header {
 .navbar {
   height: 150%; /* This will make it fill the entire height of the header */
 }
+
 body {
   background: radial-gradient(
     circle,
@@ -209,4 +218,9 @@ body {
 }
 .font-size-small {
   font-size: 14px;
+}
+
+.react-parallax {
+  margin: 0;
+  padding: 0;
 }
