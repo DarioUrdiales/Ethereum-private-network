@@ -126,12 +126,12 @@ export function CreateNetwork() {
     setNewRed({ ...newRed, account: e.target.value });
   };
 
-  const handleAddNetwork = () => {
-    const isValid = submitRed();
-    if (!isValid) {
+  const handleAddNetwork = async () => {
+    if (!submitRed()) {
       return;
     }
 
+    // If you want to create a new network and send updated specifications
     const newRedData = {
       ...newRed,
       redId: `red${redSpecifications.length + 1}`,
@@ -139,10 +139,17 @@ export function CreateNetwork() {
       nodeCount: parseInt(newRed.nodeCount, 10),
       account: newRed.account,
     };
+
+    // Add newRedData to the existing specifications
     const updatedReds = [...redSpecifications, newRedData];
 
-    // Send the updated redSpecifications to the backend
-    updateVariables(updatedReds);
+    // Assuming you want to send the updated list to the backend
+    await updateVariables(updatedReds);
+
+    // Only call createRed if a new network is indeed being created
+    // if (redSpecifications.length === 0) {
+    //   await createRed();
+    // }
   };
 
   const fetchRedParameters = async () => {
@@ -160,10 +167,10 @@ export function CreateNetwork() {
    * Asynchronously updates the Red specifications in the backend.
    * It sends the current state of variables and redSpecifications to the server.
    */
-  const updateVariables = async () => {
+  const updateVariables = async (updatedReds) => {
     const requestData = {
       variables,
-      reds: redSpecifications,
+      reds: updatedReds,
     };
     console.log("Enviando JSON al servidor:", requestData);
 
@@ -213,6 +220,7 @@ export function CreateNetwork() {
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ newRed }),
         }
       );
 
@@ -295,6 +303,18 @@ export function CreateNetwork() {
                   onClick={handleAddNetwork}>
                   {editIndex !== null ? "Actualizar Red" : "Agregar Nueva Red"}
                 </button>
+                <button
+                  className={`btn ${
+                    isCreationSuccessful ? "btn-success" : "btn-primary"
+                  } mt-4`}
+                  onClick={createRed}
+                  disabled={creatingRed}>
+                  {creatingRed
+                    ? "Creando..."
+                    : redSpecifications.length === 1
+                    ? "Crear Red "
+                    : "Crear Redes "}
+                </button>
               </div>
             </div>
           </div>
@@ -302,6 +322,11 @@ export function CreateNetwork() {
 
         {redSpecifications.length > 0 && (
           <>
+            <div className="d-flex justify-content-center gap-2">
+              <button className="btn btn-secondary mt-4" onClick={goBack}>
+                Ir a Listado de Redes
+              </button>
+            </div>
             <h4 className="mt-5 text-center white-text ">
               Especificaciones de las Redes
             </h4>
@@ -340,23 +365,7 @@ export function CreateNetwork() {
             </table>
           </>
         )}
-        <div className="d-flex justify-content-end gap-2">
-          <button
-            className={`btn ${
-              isCreationSuccessful ? "btn-success" : "btn-primary"
-            } mt-4`}
-            onClick={createRed}
-            disabled={creatingRed}>
-            {creatingRed
-              ? "Creando..."
-              : redSpecifications.length === 1
-              ? "Crear Nueva Red Privada"
-              : "Crear Nuevas Redes Privadas"}
-          </button>
-          <button className="btn btn-secondary mt-4" onClick={goBack}>
-            Ir a Listado de Redes
-          </button>
-        </div>
+
         {creationMessage && (
           <div className="alert alert-info d-flex mt-2 justify-content-end">
             {creationMessage}
