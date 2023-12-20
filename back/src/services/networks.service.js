@@ -10,7 +10,6 @@ const { generatePassword, generateIpList } = require("../utils/networks.utils");
  * @returns {Array} - Un array de objetos con el nombre de las redes.
  */
 const getNetworksList = () => {
-
   const networksListCommand = `docker network ls --filter name="^blockchain" --format {{.Name}}`;
  
   const networksList = execSync(networksListCommand).toString();
@@ -31,7 +30,7 @@ const getNetworksList = () => {
     const nodes = nodesList.length;
     const normalNodes = nodesList.filter(node => node.includes("nodo")).length;
 
-    return { 
+    return {
       name,
       chainId,
       nodes,
@@ -43,7 +42,7 @@ const getNetworksList = () => {
 
   networks.pop();
   return networks;
-}
+};
 
 /**
  * Elimina la blockchain correspondiente al chainId especificado.
@@ -249,23 +248,25 @@ const addNode = (chainId, nodesCount) => {
   if (nodesCount === 0) return;
 
   const networks = getNetworksList();
-  const currentNetwork = networks?.find(network => network?.chainId === chainId);
-  
+  const currentNetwork = networks?.find(
+    (network) => network?.chainId === chainId
+  );
+
   if (!currentNetwork) return;
 
-  // Paramos la red  
+  // Paramos la red
   stopNetwork(chainId);
 
-  // Creamos el nuevo nodo y lo añadimos al docker-compose.yaml 
+  // Creamos el nuevo nodo y lo añadimos al docker-compose.yaml
   for (let i = 1; i <= nodesCount; i++) {
-    createNode(chainId, currentNetwork.normalNodes + i);    
+    createNode(chainId, currentNetwork.normalNodes + i);
   }
 
   // Arrancamos la red con el nuevo docker-compose.yaml
   setTimeout(() => {
     upNetwork(chainId);
   }, 5000);
-}
+};
 
 /**
  * Añade una nueva cuenta a la blockchain especificada.
@@ -273,28 +274,32 @@ const addNode = (chainId, nodesCount) => {
  * @param {string} account - La dirección de la cuenta a añadir.
  */
 const addAccount = (chainId, account) => {
-  if (!account || account === '') return;
+  if (!account || account === "") return;
 
   downNetwork(chainId);
 
   const pathNetworkFile = `../nodos/blockchain-${chainId}/genesis.json`;
-  const genesisFile = JSON.parse(fs.readFileSync(pathNetworkFile, 'utf8'));
+  const genesisFile = JSON.parse(fs.readFileSync(pathNetworkFile, "utf8"));
   const formattedAddress = account.substring(2);
-  console.log({formattedAddress}); 
+  console.log({ formattedAddress });
   console.log(genesisFile.alloc);
-  
+
   genesisFile.alloc[formattedAddress] = {
-    balance: "2000000000000000000000000"
-  }
+    balance: "2000000000000000000000000",
+  };
 
   const newGenesisFile = JSON.stringify(genesisFile, null, 2);
 
-  fs.writeFileSync(`../nodos/blockchain-${chainId}/genesis.json`, newGenesisFile, 'utf8');
+  fs.writeFileSync(
+    `../nodos/blockchain-${chainId}/genesis.json`,
+    newGenesisFile,
+    "utf8"
+  );
 
   setTimeout(() => {
     upNetwork(chainId);
   }, 5000);
-}
+};
 
 /**
  * Detiene la blockchain correspondiente al chainId especificado.
@@ -302,9 +307,9 @@ const addAccount = (chainId, account) => {
  */
 const stopNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose stop`;
-  
+
   execute(command);
-}
+};
 
 /**
  * Inicia la blockchain correspondiente al chainId especificado.
@@ -312,9 +317,9 @@ const stopNetwork = (chainId) => {
  */
 const startNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose start`;
-  
+
   execute(command);
-}
+};
 
 /**
  * Elimina la blockchain correspondiente al chainId especificado.
@@ -322,9 +327,9 @@ const startNetwork = (chainId) => {
  */
 const downNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose down`;
-  
+
   execute(command);
-}
+};
 
 /**
  * Levanta la blockchain correspondiente al chainId especificado.
@@ -332,9 +337,9 @@ const downNetwork = (chainId) => {
  */
 const upNetwork = (chainId) => {
   const command = `cd ../nodos/blockchain-${chainId} && docker-compose up`;
-  
+
   execute(command);
-}
+};
 
 /**
  * Crea un nuevo nodo en la blockchain especificada.
@@ -343,11 +348,13 @@ const upNetwork = (chainId) => {
  */
 const createNode = (chainId, nodeNumber) => {
   const pathNetworkFile = `../nodos/blockchain-${chainId}/docker-compose.yaml`;
-  const networkFile = yaml.load(fs.readFileSync(pathNetworkFile, 'utf8'));
+  const networkFile = yaml.load(fs.readFileSync(pathNetworkFile, "utf8"));
   const nodesList = Object.values(networkFile.services);
-  
+
   const newNode = JSON.parse(JSON.stringify(nodesList[nodesList.length - 1]));
-  const nodeIp = String(newNode.networks[`priv-eth-net-${chainId}`].ipv4_address);
+  const nodeIp = String(
+    newNode.networks[`priv-eth-net-${chainId}`].ipv4_address
+  );
   const newIp = randomIp(nodeIp, networkFile);
 
   newNode.hostname = `nodo-${nodeNumber}`;
@@ -355,26 +362,31 @@ const createNode = (chainId, nodeNumber) => {
   newNode.entrypoint = newNode.entrypoint.replace(nodeIp, newIp);
 
   networkFile.services[`nodo-${nodeNumber}`] = newNode;
-  
+
   const newNetworkFile = yaml.dump(networkFile);
 
-  fs.writeFileSync(`../nodos/blockchain-${chainId}/docker-compose.yaml`, newNetworkFile, 'utf8');
-}
+  fs.writeFileSync(
+    `../nodos/blockchain-${chainId}/docker-compose.yaml`,
+    newNetworkFile,
+    "utf8"
+  );
+};
 
 const randomIp = (nodeIp, networkFile) => {
   const networkFileSerialized = JSON.stringify(networkFile);
-  
+
   const randomFraction = Math.random();
 
   const min = 10;
   const max = 254;
   const randomNumber = Math.floor(randomFraction * (max - min + 1)) + min;
-  const newIp = nodeIp.substring(0, nodeIp.lastIndexOf('.') + 1) + randomNumber.toString();
- 
+  const newIp =
+    nodeIp.substring(0, nodeIp.lastIndexOf(".") + 1) + randomNumber.toString();
+
   if (!networkFileSerialized.includes(newIp)) return newIp;
-  
+
   randomIp(nodeIp, networkFile);
-}
+};
 
 const execute = (command) => {
   exec(command, (error, stdout, stderr) => {
@@ -389,14 +401,38 @@ const execute = (command) => {
 
     console.log(`Salida estándar del comando:\n${stdout}`);
   });
+};
+
+// Function to handle the database data
+async function dbData(updatedParameters, onSuccess, onError) {
+  try {
+    console.log("Received Red parameters:", updatedParameters);
+
+    // Overwrite file with new data
+    fs.writeFile(
+      "redParameters.json",
+      JSON.stringify(updatedParameters, null, 2),
+      (err) => {
+        if (err) {
+          console.error(err);
+          return onError(err);
+        }
+        onSuccess({ message: "JSON received and stored." });
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+    onError({ error: error.message });
+  }
 }
 
-module.exports = { 
+module.exports = {
   getNetworksList,
   removeNetwork,
   createNetwork,
   addNode,
   addAccount,
   startNetwork,
-  stopNetwork
+  stopNetwork,
+  dbData,
 };

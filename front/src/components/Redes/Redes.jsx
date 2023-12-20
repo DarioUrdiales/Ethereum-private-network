@@ -2,9 +2,19 @@ import { Outlet } from "react-router-dom";
 
 export function Redes() {
   return (
-    <>
-      <h1 className='no-underline link-dark d-flex justify-content-center align-items-center text-content-build mt-3 mb-0'>Redes</h1>      
-      <Outlet/>
-    </>
-  )
+    <div>
+      <h1
+        className="text-content-build"
+        style={{
+          marginTop: "30px",
+          color: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
+        Redes
+      </h1>
+      <Outlet />
+    </div>
+  );
 }
