@@ -7,6 +7,7 @@ import {
   ArrowClockwise,
   TrashFill,
   WalletFill,
+  Plugin,
 } from "react-bootstrap-icons";
 import { Toast, ToastContainer } from "react-bootstrap";
 import { CustomModal } from "./CustomModal";
@@ -171,6 +172,24 @@ export function NetworkList() {
     }
   };
 
+  const connectToMetaMask = async (chainId, port) => {
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [{
+        chainId: `0x${parseInt(chainId).toString(16)}`,
+        rpcUrls: [`http://localhost:${port}`],
+        chainName: `Network ${chainId}`,
+        nativeCurrency: {
+          name: "TOKEN",
+          symbol: "TOKEN",
+          decimals: 18
+        },
+      }]
+    });
+    setShowToast(true);
+    setToastMessage("Red añadida a MetaMask");
+  }
+
   return (
     <>
       <div className="container mb-5 mt-5">
@@ -220,6 +239,21 @@ export function NetworkList() {
                     <td>{network.normalNodes}</td>
                     <td>{network.status}</td>
                     <td>
+                      {network.port ? (
+                        <Plugin
+                          onClick={() => connectToMetaMask(network.chainId, network.port)}
+                          cursor={"pointer"}
+                          title="Connect to MetaMask"
+                          size={20}
+                        />
+                      ) : (
+                        <Plugin
+                        cursor={"cursor"}
+                        title="Connect to MetaMask"
+                        size={20}
+                        color="grey"
+                      />
+                      )}
                       <Plus
                         onClick={() => openAddNodeModal(network.chainId)}
                         title="Add node"
