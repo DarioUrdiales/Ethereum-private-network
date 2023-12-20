@@ -19,9 +19,7 @@ const key_miner = JSON.parse(
   )
 );
 const passwd_miner = fs.readFileSync("../nodos/initial-blockchain/pwd.txt");
-console.log(passwd_miner);
 
-const network = require("./ethers/config");
 const app = express();
 
 app.use(express.json());

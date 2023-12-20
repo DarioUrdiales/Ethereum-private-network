@@ -111,7 +111,7 @@ const createNetwork = (nodesNumber, chainId, walletAccount) => {
   
   genesis.extraData = `0x${'0'.repeat(64)}${account}${'0'.repeat(130)}`
   genesis.alloc[account] = {balance: "1000000000000000000000000"}
-  genesis.alloc[walletAccount] = {balance: "1000000000000000000000000"}
+  if (walletAccount) genesis.alloc[walletAccount] = {balance: "1000000000000000000000000"}
   
   fs.writeFileSync(path.join(blockchainPath, 'genesis.json'), JSON.stringify(genesis,null,2))
 
@@ -249,7 +249,7 @@ const addNode = (chainId, nodesCount) => {
 
   const networks = getNetworksList();
   const currentNetwork = networks?.find(
-    (network) => network?.chainId === chainId
+    (network) => network?.chainId == chainId
   );
 
   if (!currentNetwork) return;
