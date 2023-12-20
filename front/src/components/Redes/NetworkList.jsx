@@ -68,7 +68,7 @@ export function NetworkList() {
         await refreshList();
         setShowToast(true);
         setToastMessage("La red ha sido eliminada exitosamente!");
-      }, 10000);
+      }, 1000);
     } catch (error) {
       throw new Error(
         `Error al intentar eliminar la red con el id de cadena ${chainId}: ${error.message}`
@@ -86,7 +86,7 @@ export function NetworkList() {
         await refreshList();
         setShowToast(true);
         setToastMessage("La red ha sido iniciada exitosamente!");
-      }, 5000);
+      }, 1000);
     } catch (error) {
       throw new Error(
         `Error al intentar iniciar la red con el id de cadena ${chainId}: ${error.message}`
@@ -104,7 +104,7 @@ export function NetworkList() {
         await refreshList();
         setShowToast(true);
         setToastMessage("La red ha sido detenida exitosamente!");
-      }, 10000);
+      }, 1000);
     } catch (error) {
       throw new Error(
         `Error al intentar detener la red con el id de cadena ${chainId}: ${error.message}`
@@ -137,7 +137,7 @@ export function NetworkList() {
         await refreshList();
         setShowToast(true);
         setToastMessage("Los nodos han sido agregados exitosamente a la red!");
-      }, 7000);
+      }, 5000);
     } catch (error) {
       throw new Error(
         `Error al intentar agregar ${nodesCount} nodos a la red con el id de cadena ${chainId}: ${error.message}`
@@ -163,7 +163,7 @@ export function NetworkList() {
         setToastMessage(
           `La cuenta ${account} ha sido agregada exitosamente a la red!`
         );
-      }, 7000);
+      }, 5000);
     } catch (error) {
       throw new Error(
         `Error al intentar agregar la cuenta ${account} a la red con el id de cadena ${chainId}: ${error.message}`
@@ -202,6 +202,7 @@ export function NetworkList() {
               <tr className="align-middle text-white">
                 <th>Nombre</th>
                 <th>Chain id</th>
+                <th>Puerto</th>
                 <th>Total de Nodos</th>
                 <th>Número de Nodos Completos </th>
                 <th>Estado</th>
@@ -214,6 +215,7 @@ export function NetworkList() {
                   <tr className="align-middle text-white" key={index}>
                     <td>{network.name}</td>
                     <td>{network.chainId}</td>
+                    <td>{network.port}</td>
                     <td>{network.nodes}</td>
                     <td>{network.normalNodes}</td>
                     <td>{network.status}</td>
@@ -231,7 +233,7 @@ export function NetworkList() {
                         size={20}
                         color="#a26300"
                       />
-                      {network.status === "Exited" ? (
+                      {network.status !== "Running" ? (
                         <PlayFill
                           onClick={() => startNetwork(network.chainId)}
                           cursor={"pointer"}
