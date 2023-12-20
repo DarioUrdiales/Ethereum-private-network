@@ -35,10 +35,18 @@ export function Faucet() {
   const [divTxOK, setDivTxOK] = useState(false);
   const [loadingInvokeFaucet, setLoadingInvokeFaucet] = useState(false);
   useEffect(() => {
-    window.ethereum.on("accountsChanged", (accounts) => {
-      setAccount(accounts[0]);
-    });
+    getAccount()
   });
+
+  async function getAccount() {
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    setAccount(accounts[0]);
+    window.ethereum.on("accountsChanged", (accounts) =>
+      setAccount(accounts[0])
+    );
+  }
 
   /**
    * Fetches the Ethereum account's balance.
@@ -75,6 +83,20 @@ export function Faucet() {
         });
         setAccount(accounts[0]);
         setError(null);
+        
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: `0x1F40`,
+            rpcUrls: [`http://localhost:8670`],
+            chainName: `G2 Initial Blockchain`,
+            nativeCurrency: {
+              name: "TOKEN",
+              symbol: "TOKEN",
+              decimals: 18
+            },
+          }]
+        });
         await fetchBalance();
       } catch (error) {
         setError("Error al conectar la billetera.");
@@ -88,16 +110,8 @@ export function Faucet() {
   };
 
   useEffect(() => {
-    const handleAccountsChanged = (accounts) => {
-      setAccount(accounts[0]);
-    };
-
-    window.ethereum.on("accountsChanged", handleAccountsChanged);
-
-    return () => {
-      window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
-    };
-  }, []);
+    fetchBalance()
+  }, [account]);
 
   /**
    * Invokes the faucet to get Ethereum tokens.

@@ -65,7 +65,7 @@ const removeNetwork = (chainId) => {
  * @param {number} nodesNumber - El número de nodos de la blockchain.
  * @param {number} chainId - El id de la blockchain a crear.
  */
-const createNetwork = (nodesNumber, chainId) => {
+const createNetwork = (nodesNumber, chainId, walletAccount) => {
   //Con script de BASH
   // const command = `bash ./exec_network.sh ${nodesNumber} ${chainId}`;
   // execute(command);
@@ -105,13 +105,13 @@ const createNetwork = (nodesNumber, chainId) => {
       alloc: {}
   }
   const accountRegex = /0x([A-F0-9]{40})/i
-  const account = execSync(
-      `geth --datadir ${blockchainPath} account new --password ${blockchainPath}/pwd.txt`)
+  const account = execSync(`geth --datadir ${blockchainPath} account new --password ${blockchainPath}/pwd.txt`)
       .toString()
       .match(accountRegex)[1]
   
   genesis.extraData = `0x${'0'.repeat(64)}${account}${'0'.repeat(130)}`
   genesis.alloc[account] = {balance: "1000000000000000000000000"}
+  genesis.alloc[walletAccount] = {balance: "1000000000000000000000000"}
   
   fs.writeFileSync(path.join(blockchainPath, 'genesis.json'), JSON.stringify(genesis,null,2))
 
