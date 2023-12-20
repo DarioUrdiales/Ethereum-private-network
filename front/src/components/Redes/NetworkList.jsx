@@ -56,7 +56,7 @@ export function NetworkList() {
         await refreshList(); 
         setShowToast(true);
         setToastMessage("Network has been succesfully removed!");
-      }, 10000);
+      }, 1000);
     } catch (error) {
       throw new Error(`Error trying to remove the network with chain id ${chainId}: ${error.message}`);
     } 
@@ -70,7 +70,7 @@ export function NetworkList() {
         await refreshList(); 
         setShowToast(true);
         setToastMessage("Network has been succesfully started!");
-      }, 5000);
+      }, 1000);
     } catch (error) {
       throw new Error(`Error trying to start the network with chain id ${chainId}: ${error.message}`);
     } 
@@ -84,7 +84,7 @@ export function NetworkList() {
         await refreshList(); 
         setShowToast(true);
         setToastMessage("Network has been succesfully stopped!");
-      }, 10000);
+      }, 1000);
     } catch (error) {
       throw new Error(`Error trying to stop the network with chain id ${chainId}: ${error.message}`);
     } 
@@ -116,7 +116,7 @@ export function NetworkList() {
         await refreshList(); 
         setShowToast(true);
         setToastMessage("Nodes has been succesfully added to the network!");
-      }, 7000);
+      }, 5000);
     } catch (error) {
       throw new Error(`Error trying to add ${nodesCount} nodes to the network with chain id ${chainId}: ${error.message}`);
     }
@@ -140,7 +140,7 @@ export function NetworkList() {
         await refreshList(); 
         setShowToast(true);
         setToastMessage(`The account ${account} has been succesfully added to the network!`);
-      }, 7000);
+      }, 5000);
     } catch (error) {
       throw new Error(`Error trying to add the account ${account} to the network with chain id ${chainId}: ${error.message}`);
     }
@@ -162,6 +162,7 @@ export function NetworkList() {
               <tr className="align-middle">
                 <th>Name</th>
                 <th>Chain id</th>
+                <th>Port</th>
                 <th>Nodes count</th>
                 <th>Normal nodes count</th>
                 <th>Status</th>
@@ -175,6 +176,7 @@ export function NetworkList() {
                     <tr className="align-middle" key={index}>
                       <td>{network.name}</td>
                       <td>{network.chainId}</td>
+                      <td>{network.port}</td>
                       <td>{network.nodes}</td>
                       <td>{network.normalNodes}</td>
                       <td>{network.status}</td>
@@ -182,9 +184,9 @@ export function NetworkList() {
                         <Plus onClick={() => openAddNodeModal(network.chainId)} title="Add node" cursor={'pointer'} size={28}/>
                         <WalletFill onClick={() => openAddAccountModal(network.chainId)} title="Add account" cursor={'pointer'} size={20} color="#a26300"/>
                         {
-                          network.status === 'Exited' ? 
-                          <PlayFill onClick={() => startNetwork(network.chainId)} cursor={'pointer'} title="Start blockchain" color={"green"} size={24}/> :
-                          <StopFill onClick={() => stopNetwork(network.chainId)} cursor={'pointer'} title="Stop blockchain" color={"red"} size={24}/>
+                          network.status === 'Running' ? 
+                          <StopFill onClick={() => stopNetwork(network.chainId)} cursor={'pointer'} title="Stop blockchain" color={"red"} size={24}/> :
+                          <PlayFill onClick={() => startNetwork(network.chainId)} cursor={'pointer'} title="Start blockchain" color={"green"} size={24}/> 
                         }                      
                         <TrashFill onClick={() => removeNetwork(network.chainId)} cursor={'pointer'} title="Delete blockchain" size={20}/>
                       </td>
