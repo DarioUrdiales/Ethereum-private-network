@@ -9,6 +9,7 @@ const {
   addAccount,
   stopNetwork,
   startNetwork,
+  dbData,
 } = require("./services/networks.service");
 const fs = require("fs");
 
@@ -180,20 +181,10 @@ app.get("/api/balance/:address", async (req, res) => {
 // Route to get the current Red parameters
 app.get("/api/networks/inputredparameters", async (req, res) => {
   try {
-    const updatedParameters = req.body;
-    console.log("Received Red parameters:", updatedParameters);
-
-    // Overwrite file with new data
-    fs.writeFile(
-      "redParameters.json",
-      JSON.stringify(req.body, null, 2),
-      (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send(err);
-        }
-        res.send({ message: "JSON received and stored." });
-      }
+    dbData(
+      req.body,
+      (successMessage) => res.send(successMessage),
+      (err) => res.status(500).send(err)
     );
   } catch (error) {
     console.error(error.message);
@@ -204,20 +195,10 @@ app.get("/api/networks/inputredparameters", async (req, res) => {
 // Route to update the Red parameter
 app.post("/api/networks/inputredparameters", async (req, res) => {
   try {
-    const updatedParameters = req.body;
-    console.log("Received Red parameters:", updatedParameters);
-
-    // Write JSON string to a file
-    fs.writeFile(
-      "redParameters.json",
-      JSON.stringify(req.body, null, 2),
-      (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send(err);
-        }
-        res.send({ message: "JSON received and stored." });
-      }
+    dbData(
+      req.body,
+      (successMessage) => res.send(successMessage),
+      (err) => res.status(500).send(err)
     );
   } catch (error) {
     console.error(error.message);
@@ -226,24 +207,28 @@ app.post("/api/networks/inputredparameters", async (req, res) => {
 });
 
 // Route to create a network based on parameters from 'red1' in redParameters.json
-app.post("/api/networks/redparameters", (req, res) => {
+app.post("/api/networks/redparameters", async (req, res) => {
   try {
     const redParameters = JSON.parse(
       fs.readFileSync("redParameters.json", "utf8")
     );
-
     if (!Array.isArray(redParameters.reds)) {
       throw new Error("No reds array found in redParameters.json");
     }
 
-    redParameters.reds.forEach((red) => {
-      const { nodeCount, chainId } = red;
+    for (const red of redParameters.reds) {
+      const { nodeCount, chainId, account } = red;
 
-      createNetwork(nodeCount, chainId);
-    });
+      // Check if 'account' is present and not empty
+      if (account && account.trim() !== "") {
+        await createNetwork(nodeCount, chainId, account);
+      } else {
+        await createNetwork(nodeCount, chainId);
+      }
+    }
 
     res.status(200).json({
-      message: "Networks have been successfully created for all reds.",
+      message: "Networks have been successfully created.",
     });
   } catch (error) {
     console.error("Error creating networks:", error);
