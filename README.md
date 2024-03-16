@@ -1,4 +1,4 @@
-# EthereumPrivateRed
+# Ethereum private network
 
 **Introduction**
 
